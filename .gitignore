@@ -1,0 +1,9 @@
+build
+dist
+__pycache__
+.vscode
+demo_frontend.spec
+mqtt.py
+uart.py
+note.txt
+myenv
