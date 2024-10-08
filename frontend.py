@@ -1,8 +1,4 @@
 import customtkinter
-<<<<<<< HEAD
-=======
-from connect_to_mongodb import *
->>>>>>> e9bab437f0db0820a6b15607368a26f3c80b1bee
 from connect_to_rs485_relay import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,15 +8,12 @@ import pandas as pd
 import matplotlib.patches as patches
 from get_data_from_adafruit import *
 
-<<<<<<< HEAD
-=======
-def get_data_from_database():
-    data = connect_database("test")
-    return data
+#def get_data_from_database():
+#    data = connect_database("test")
+#    return data
 
-print(get_data_from_database())
+#print(get_data_from_database())
 
->>>>>>> e9bab437f0db0820a6b15607368a26f3c80b1bee
 
 # Class định nghĩa TabView
 class MyTabView(customtkinter.CTkTabview):
