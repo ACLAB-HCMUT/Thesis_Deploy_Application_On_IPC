@@ -1,0 +1,27 @@
+iot_desktop_app/
+│
+├── controller/
+│   ├── user_controller.py         # User controller for managing UI interactions
+│   └── device_controller.py       # Device controller for managing relay operations
+│
+├── model/
+│   ├── user_model.py              # User data model
+│   └── sensor_model.py            # Model for handling sensor data
+│
+├── views/
+│   ├── user_view.py               # Login/Register views
+│   ├── home_page.py               # Home page component
+│   ├── farm_page.py               # Farm page component
+│   └── settings_page.py           # Settings page component
+│
+├── services/
+│   ├── connect_adafruit.py        # MQTT connection to Adafruit IO
+│   ├── connect_to_rs485_relay.py  # RS485 relay connection and controls
+│   └── connect_rs485_sensor.py    # RS485 sensor connection and data acquisition
+│
+├── utils/
+│   └── constant.py                # Constants like API keys, user credentials, and configurations
+│
+├── main.py                        # Main entry point
+├── requirements.txt               # Project dependencies
+└── README.md                      # Project description and documentation
