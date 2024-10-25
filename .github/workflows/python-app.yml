@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - Frontend_Vinh  # Chạy khi có thay đổi trên nhánh Vinh
+      - CI_CD  # Chạy khi có thay đổi trên nhánh Vinh
 
 jobs:
   build:
