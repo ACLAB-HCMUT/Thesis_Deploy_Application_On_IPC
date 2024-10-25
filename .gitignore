@@ -1,3 +1,4 @@
 myenv
 main.spec
 dist
+__pycache__
