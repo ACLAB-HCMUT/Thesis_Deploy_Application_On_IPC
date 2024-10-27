@@ -1,0 +1,101 @@
+### Get all data temperature and humidity
+GET https://do-an-ktmt-backend.onrender.com/api/data
+
+### Get latest data temperature and humidity
+GET https://do-an-ktmt-backend.onrender.com/api/data/sensors/latest
+
+### Get data according sensors (humidity or temperature)
+GET https://do-an-ktmt-backend.onrender.com/api/data/sensors?variable=humidity
+
+
+### Get data according sensors and timestamps (humidity or temperature)
+GET https://do-an-ktmt-backend.onrender.com/api/data/sensorToTime?variable=temperature&start_date=2024-09-01&end_date=2024-09-30
+
+
+### Register users
+POST https://do-an-ktmt-backend.onrender.com/api/users/register
+Content-Type: application/json
+
+{
+    "name": "Trung Nguyen",
+    "password": "123456",
+    "email": "trungnguyen@gmail.com",
+    "phoneNumber": "037466892",
+    "address": "Road A block B"
+}
+
+
+### Login users
+POST https://do-an-ktmt-backend.onrender.com/api/users/login
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "password": "12345678"
+}
+
+
+### Update password users
+POST https://do-an-ktmt-backend.onrender.com/api/users/updatePassword
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "password": "12345678"
+}
+
+
+### Update password users
+POST https://do-an-ktmt-backend.onrender.com/api/users/update
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "name": "Trung Nguyen Thanh",
+    "phoneNumber": "01234567",
+    "address": "Road N, Block K"
+}
+
+
+### Delete users
+POST https://do-an-ktmt-backend.onrender.com/api/users/delete
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com"
+}
+
+### Get all data relay
+GET https://do-an-ktmt-backend.onrender.com/api/data/relay/all
+
+
+### Get data relay detail
+GET https://do-an-ktmt-backend.onrender.com/api/data/relay?variable=nutnhan1
+
+### Update relay
+PATCH https://do-an-ktmt-backend.onrender.com/api/data/relay/update
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan1",
+    "status": "ON"
+}
+
+
+### Create relay
+POST https://do-an-ktmt-backend.onrender.com/api/data/relay/create
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan3",
+    "status": "ON"
+}
+
+
+### Delete relay
+POST https://do-an-ktmt-backend.onrender.com/api/data/relay/delete
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan1"
+}
