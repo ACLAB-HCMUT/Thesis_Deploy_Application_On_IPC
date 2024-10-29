@@ -172,33 +172,33 @@ class DevicesView(ctk.CTkFrame):
         self.relay6_switch = ctk.CTkSwitch(self.relay6_frame, switch_width=60, switch_height=25, text="", onvalue="ON", offvalue="OFF")
         self.relay6_switch.grid(row=1, column=1, padx=(35,5), pady=(0,10))
 
-        # # Relays Group 3
-        # self.relay_group3_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
-        # self.relay_group3_frame.pack(anchor="n",fill="x", padx=27, pady=(36, 0))
-        # self.create_switches(3)
+        # Relays Group 3
+        self.relay_group3_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
+        self.relay_group3_frame.pack(anchor="n",fill="x", padx=27, pady=(36, 0))
+        self.create_switches(2)
 
         # Fetch relay data
         self.fetch_relay_data()
 
     # Function to create a specified number of switches
-    # def create_switches(self, num_switches):
-    #     for i in range(num_switches):
-    #         self.relay_frame = ctk.CTkFrame(self.relay_group3_frame,border_color="#2A8C55", fg_color="transparent", border_width=2, width=200, height=60)
-    #         self.relay_frame.grid_propagate(0)
-    #         self.relay_frame.pack(side="left", expand=True, anchor="center")
-    #         self.relay_frames.append(self.relay_frame)
+    def create_switches(self, num_switches):
+        for i in range(num_switches):
+            self.relay_frame = ctk.CTkFrame(self.relay_group3_frame,border_color="#2A8C55", fg_color="transparent", border_width=2, width=200, height=60)
+            self.relay_frame.grid_propagate(0)
+            self.relay_frame.pack(side="left", expand=True, anchor="center")
+            self.relay_frames.append(self.relay_frame)
 
-    #         self.relay_img_label = ctk.CTkLabel(self.relay_frames[i], image=self.relay_img, text="")
-    #         self.relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,5), pady=(10,10))
-    #         self.relay_img_labels.append(self.relay_img_label)
+            self.relay_img_label = ctk.CTkLabel(self.relay_frames[i], image=self.relay_img, text="")
+            self.relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,5), pady=(10,10))
+            self.relay_img_labels.append(self.relay_img_label)
 
-    #         self.relay_label = ctk.CTkLabel(self.relay_frames[i], text="Relay 6", font=("Arial Black", 15), text_color="#2A8C55")
-    #         self.relay_label.grid(row=0, column=1, pady=(2,0))
-    #         self.relay_labels.append(self.relay_label)
+            self.relay_label = ctk.CTkLabel(self.relay_frames[i], text=f"Relay {i + 1}", font=("Arial Black", 15), text_color="#2A8C55")
+            self.relay_label.grid(row=0, column=1, pady=(2,0))
+            self.relay_labels.append(self.relay_label)
 
-    #         self.relay_switch = ctk.CTkSwitch(self.relay_frames[i], switch_width=60, switch_height=25, text="", onvalue="ON", offvalue="OFF")
-    #         self.relay_switch.grid(row=1, column=1, padx=(35,5), pady=(0,10))
-    #         self.switches.append(self.relay_switch)
+            self.relay_switch = ctk.CTkSwitch(self.relay_frames[i], switch_width=60, switch_height=25, text="", command=lambda i=i: self.toggle_switch(i), onvalue="ON", offvalue="OFF")
+            self.relay_switch.grid(row=1, column=1, padx=(35,5), pady=(0,10))
+            self.switches.append(self.relay_switch)
 
     def switcher(self):
         url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/update"
@@ -218,16 +218,41 @@ class DevicesView(ctk.CTkFrame):
                 print("Failed to update. Status code:", response.status_code)
         except requests.RequestException as e:
             print("An error occurred:", e)
+
+    def toggle_switch(self, switch):
+        url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/update"
+        data = {
+            "relayName": f"nutnhan{switch+1}",
+            "status": self.switches[switch].get()
+        } 
+        try:
+            response = requests.patch(url, json=data)
+        except requests.RequestException as e:
+            print("An error occurred:", e)
+
+    # def fetch_relay_data(self):
         
+    #     response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay/all").json()
+    #     data = response["data"]
+
+    #     if data[0].get("status") == "ON":
+    #         self.relay1_switch.select()
+    #     else:
+    #         self.relay1_switch.deselect()
+        
+    #     # Schedule the next data fetch in 10 seconds
+    #     self.after(10000, self.fetch_relay_data)
+
     def fetch_relay_data(self):
         
         response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay/all").json()
         data = response["data"]
 
-        if data[0].get("status") == "ON":
-            self.relay1_switch.select()
-        else:
-            self.relay1_switch.deselect()
+        for i in range(len(data)):
+            if data[i].get("status") == "ON":
+                self.switches[i].select()
+            else:
+                self.switches[i].deselect()
         
         # Schedule the next data fetch in 10 seconds
         self.after(10000, self.fetch_relay_data)
