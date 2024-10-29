@@ -9,7 +9,7 @@ class NotificationView(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
         # Set up sidebar
-        self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55",  width=176, height=650, corner_radius=0)
+        self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55",  width=170, height=600, corner_radius=0)
         self.sidebar_frame.pack_propagate(0)
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
 
@@ -44,12 +44,12 @@ class NotificationView(ctk.CTkFrame):
 
         # Sign out button
         self.signout_btn = ctk.CTkButton(self.sidebar_frame, text="Sign Out", font=("Arial Bold", 14), fg_color="#fff", text_color="#2A8C55", hover_color="#eee")
-        self.signout_btn.grid(row=6, column=0, padx=10, pady=(250,0), sticky="ew")
+        self.signout_btn.pack(side="bottom", padx=10, pady=(0,10))
 
         # Set up main view
-        self.main_view = ctk.CTkFrame(self, fg_color="#fff",  width=680, height=650, corner_radius=0)
+        self.main_view = ctk.CTkFrame(self, fg_color="#fff",  width=640, height=600, corner_radius=0)
         self.main_view.pack_propagate(0)
-        self.main_view.pack(side="left")
+        self.main_view.pack(fill="y", anchor="w", side="right")
 
         # self.greeting = ctk.CTkLabel(self.main_view, text="")
         # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")

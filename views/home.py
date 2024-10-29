@@ -10,7 +10,7 @@ class HomeView(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
         # Set up sidebar
-        self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55",  width=176, height=650, corner_radius=0)
+        self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55", width=170, height=600, corner_radius=0)
         self.sidebar_frame.pack_propagate(0)
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
 
@@ -45,12 +45,12 @@ class HomeView(ctk.CTkFrame):
 
         # Sign out button
         self.signout_btn = ctk.CTkButton(self.sidebar_frame, text="Sign Out", font=("Arial Bold", 14), fg_color="#fff", text_color="#2A8C55", hover_color="#eee")
-        self.signout_btn.grid(row=6, column=0, padx=10, pady=(250,0), sticky="ew")
+        self.signout_btn.pack(side="bottom", padx=10, pady=(0,10))
 
         # Set up main view
-        self.main_view = ctk.CTkFrame(self, fg_color="#fff",  width=697, height=650, corner_radius=0)
+        self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=640, height=600, corner_radius=0)
         self.main_view.pack_propagate(0)
-        self.main_view.pack(side="left")
+        self.main_view.pack(fill="y", anchor="w", side="right")
 
         # self.greeting = ctk.CTkLabel(self.main_view, text="")
         # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
@@ -69,7 +69,7 @@ class HomeView(ctk.CTkFrame):
 
         # Temperature
 
-        self.temperature_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6fdd9", width=300, height=70)
+        self.temperature_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6fdd9", width=270, height=70)
         self.temperature_metric.grid_propagate(0)
         self.temperature_metric.pack(side="left", expand=True, anchor="center")
 
@@ -87,7 +87,7 @@ class HomeView(ctk.CTkFrame):
 
         # Humidity
 
-        self.humidity_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6f0fd", width=300, height=70)
+        self.humidity_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6f0fd", width=270, height=70)
         self.humidity_metric.grid_propagate(0)
         self.humidity_metric.pack(side="right", expand=True, anchor="center")
 
@@ -103,39 +103,19 @@ class HomeView(ctk.CTkFrame):
         self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="40%", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
         self.humidity_number.grid(row=1, column=1, sticky="nw", padx=(50,0), pady=(0,10))
 
-        # Light
-
-        # self.light_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#2A8C55", width=200, height=60)
-        # self.light_metric.grid_propagate(0)
-        # self.light_metric.pack(side="right")
-
-        # self.light_img_data = Image.open("assets/img/delivered_icon.png")
-        # self.light_img = ctk.CTkImage(dark_image=self.light_img_data, light_image=self.light_img_data, size=(43, 43))
-
-        # self.light_img_label = ctk.CTkLabel(self.light_metric, image=self.light_img, text="")
-        # self.light_img_label.grid(row=0, column=0, rowspan=2, padx=(12, 5), pady=10)
-
-        # self.light_label = ctk.CTkLabel(self.light_metric, text="Light", font=("Arial Black", 15), text_color="#fff")
-        # self.light_label.grid(row=0, column=1,sticky="sw")
-
-        # self.light_number = ctk.CTkLabel(self.light_metric, text="600lx", font=("Arial Black", 15), text_color="#fff", justify="left")
-        # self.light_number.grid(row=1, column=1, sticky="nw", pady=(0,10))
-
         # Fetch temperature
-        self.fetch_temperature_data()
+        self.fetch_sensor_data()
 
-    def fetch_temperature_data(self):
+    def fetch_sensor_data(self):
         try:
             response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/sensors/latest").json()
             data = response["data"]
 
-            # Find the latest record based on timestamp
+            # Get the latest record
             latest_temperature = data["temperature"]
             latest_humidity = data["humidity"]
-            # print(latest_temperature)
-            # print(latest_humidity)
             
-            # Update the label with the latest temperature
+            # Update the label with the latest value
             self.temperature_number.configure(text=f"{latest_temperature}°C")
             self.humidity_number.configure(text=f"{latest_humidity}%")
         
@@ -147,4 +127,4 @@ class HomeView(ctk.CTkFrame):
             self.humidity_number.configure(text="Invalid data format")
         
         # Schedule the next data fetch in 10 seconds
-        self.after(10000, self.fetch_temperature_data)
+        self.after(10000, self.fetch_sensor_data)
