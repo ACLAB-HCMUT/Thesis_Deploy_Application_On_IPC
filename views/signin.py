@@ -16,9 +16,9 @@ class SignInView(ctk.CTkFrame):
         self.login_label = ctk.CTkLabel(self.login_frame, text="Login Page", font=ctk.CTkFont(size=30, weight="bold"), text_color="#FFFFFF")
         self.login_label.grid(row=0, column=0, padx=35, pady=(20,20))
 
-        # Username entry
-        self.username_entry = ctk.CTkEntry(self.login_frame, width=200, placeholder_text="Username")
-        self.username_entry.grid(row=1, column=0, padx=35, pady=(20, 20))
+        # Email entry
+        self.email_entry = ctk.CTkEntry(self.login_frame, width=200, placeholder_text="Email")
+        self.email_entry.grid(row=1, column=0, padx=35, pady=(20, 20))
 
         # Password entry
         self.password_entry = ctk.CTkEntry(self.login_frame, width=200, show="*", placeholder_text="Password")

@@ -1,7 +1,7 @@
 from models.main import Model
 from models.auth import User
 from views.main import View
-
+import requests
 
 class SignInController:
     def __init__(self, model: Model, view: View) -> None:
@@ -19,10 +19,22 @@ class SignInController:
         self.view.switch("signup")
 
     def signin(self) -> None:
-        username = self.frame.username_entry.get()
+        email = self.frame.email_entry.get()
         password = self.frame.password_entry.get()
-        data = {"username": username, "password": password}
-        
-        self.frame.password_entry.delete(0, last_index=len(password))
-        user: User = {"username": data["username"]}
-        self.model.auth.login(user)
+        url = "https://do-an-ktmt-backend.onrender.com/api/users/login"
+        data = {
+            "email": email,
+            "password": password
+        }
+    
+        try:
+            response = requests.post(url, json=data)
+        except requests.RequestException as e:
+            print("An error occurred:", e)
+
+        if response.status_code == 200:
+            self.frame.password_entry.delete(0, last_index=len(password))
+            user: User = {"username": data["email"]}
+            self.model.auth.login(user)
+        else:
+            print("Invalid credentials")
