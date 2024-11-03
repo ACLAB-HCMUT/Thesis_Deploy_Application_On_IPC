@@ -1,4 +1,3 @@
-from tkinter import Frame, Label, Button
 import customtkinter as ctk
 from PIL import Image
 

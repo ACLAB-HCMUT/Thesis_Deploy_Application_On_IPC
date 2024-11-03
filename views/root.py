@@ -1,7 +1,6 @@
-from tkinter import Tk
+from customtkinter import CTk
 
-
-class Root(Tk):
+class Root(CTk):
     def __init__(self):
         super().__init__()
 
