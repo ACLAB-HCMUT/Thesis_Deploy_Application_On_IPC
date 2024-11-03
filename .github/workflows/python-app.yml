@@ -1,0 +1,32 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - Vinh_Frontend  # Chạy khi có thay đổi trên nhánh Vinh
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python3 -m venv myenv
+          source myenv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Send MQTT message to Adafruit IO
+        env:
+          AIO_USERNAME: "Vinhnguyen20"  # Tên người dùng Adafruit IO
+          AIO_KEY: ${{ secrets.AIO_KEY }}  # API Key từ GitHub Secrets
+        run: |
+          source myenv/bin/activate
+          python3 send_mqtt_message.py  # Chạy script gửi thông điệp
