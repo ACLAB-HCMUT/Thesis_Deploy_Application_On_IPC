@@ -41,10 +41,29 @@ class SignInView(ctk.CTkFrame):
         self.password_entry = ctk.CTkEntry(self.login_frame, width=225, show="*", fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
         self.password_entry.pack(anchor="w", padx=(25, 0))
 
+        # Forgot password label
+        self.forgot_password = ctk.CTkLabel(self.login_frame, text="Forgot your password?", font=("Arial", 12), text_color="#601E88", anchor="w")
+        self.forgot_password.pack(anchor="w", pady=(5, 0), padx=(128, 0))
+
         # Login button
-        self.login_btn = ctk.CTkButton(self.login_frame, text="Login", width=200, height=50, fg_color="#601E88", hover_color="#E6952D", text_color="#FFFFFF", font=("Arial Bold", 18))
-        self.login_btn.pack(anchor="w", pady=(40, 0), padx=(35, 0))
+        self.login_btn = ctk.CTkButton(self.login_frame, text="Login", width=225, height=30, fg_color="#601E88", hover_color="#E6952D", text_color="#FFFFFF", font=("Arial Bold", 18))
+        self.login_btn.pack(anchor="w", pady=(20, 0), padx=(25, 0))
+
+        # Credentials status label
+        self.cred_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.cred_status_label.pack(anchor="w", pady=(5, 0), padx=(25, 0))
+
+        # # OR label
+        # self.or_label = ctk.CTkLabel(self.login_frame, text="OR", font=("Arial Bold", 12), text_color="#601E88", anchor="w").pack(anchor="w", pady=(5, 0), padx=(120, 0))
+
+        # # Google login button
+        # self.google_login_button = ctk.CTkButton(self.login_frame, text="Continue with Google", image=self.google_icon, width=225, height=30, fg_color="#601E88", hover_color="#E6952D", text_color="#FFFFFF", font=("Arial Bold", 16))
+        # self.google_login_button.pack(anchor="w", pady=(5, 0), padx=(25, 0))
+
+        # Sign Up label
+        self.signup_label = ctk.CTkLabel(self.login_frame, text="Don't have an account? Sign up here", font=("Arial Bold", 12), text_color="#601E88", anchor="w")
+        self.signup_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Sign Up button
-        self.signup_btn = ctk.CTkButton(self.login_frame, text="Sign up", width=150, height=50, fg_color="#eeeee4", hover_color="#E6952D", text_color="#601E88", font=("Arial Bold", 18))
-        self.signup_btn.pack(anchor="w", pady=(20, 0), padx=(60, 0))
+        # self.signup_btn = ctk.CTkButton(self.login_frame, text="Sign up", width=150, height=50, fg_color="#eeeee4", hover_color="#E6952D", text_color="#601E88", font=("Arial Bold", 18))
+        # self.signup_btn.pack(anchor="w", pady=(20, 0), padx=(60, 0))

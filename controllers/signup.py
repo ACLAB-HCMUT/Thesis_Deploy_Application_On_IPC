@@ -12,23 +12,24 @@ class SignUpController:
 
     def _bind(self) -> None:
         """Binds controller functions with respective buttons in the view"""
-        self.frame.signup_btn.config(command=self.signup)
-        self.frame.signin_btn.config(command=self.signin)
+        self.frame.signup_btn.configure(command=self.signup)
+        self.frame.login_btn.configure(command=self.signin)
 
     def signin(self) -> None:
         self.view.switch("signin")
 
     def signup(self) -> None:
-        data = {
-            "fullname": self.frame.fullname_input.get(),
-            "username": self.frame.username_input.get(),
-            "password": self.frame.password_input.get(),
-            "has_agreed": self.frame.has_agreed.get(),
-        }
-        print(data)
-        user: User = {"username": data["username"]}
-        self.model.auth.login(user)
-        self.clear_form()
+        # data = {
+        #     "fullname": self.frame.fullname_input.get(),
+        #     "username": self.frame.username_input.get(),
+        #     "password": self.frame.password_input.get(),
+        #     "has_agreed": self.frame.has_agreed.get(),
+        # }
+        # print(data)
+        # user: User = {"username": data["username"]}
+        # self.model.auth.login(user)
+        # self.clear_form()
+        pass
         
     
     def clear_form(self) -> None:

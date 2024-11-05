@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from PIL import Image
+from CTkTable import CTkTable
 import requests
 
 class HomeView(ctk.CTkFrame):
@@ -101,6 +102,26 @@ class HomeView(ctk.CTkFrame):
 
         self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="40%", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
         self.humidity_number.grid(row=1, column=1, sticky="nw", padx=(50,0), pady=(0,10))
+
+        table_data = [
+            ["Relay ID", "Relay Name", "Status", "Time"],
+            ['1', 'Máy bơm 1', 'On', '12:00 1/11/2024'],
+            ['2', 'Máy bơm 2', 'Off', '12:00 1/11/2024'],
+            ['3', 'Máy bơm 3', 'On', '12:00 1/11/2024'],
+            ['4', 'Máy bơm 4', 'Off', '12:00 1/11/2024'],
+            ['1', 'Máy bơm 1', 'Off', '12:00 1/11/2024'],
+            ['2', 'Máy bơm 2', 'On', '12:00 1/11/2024'],
+            ['3', 'Máy bơm 3', 'Off', '12:00 1/11/2024'],
+            ['4', 'Máy bơm 4', 'On', '12:00 1/11/2024'],
+            ['3', 'Máy bơm 3', 'On', '12:00 1/11/2024'],
+            ['4', 'Máy bơm 4', 'Off', '12:00 1/11/2024']
+        ]
+
+        self.table_frame = ctk.CTkScrollableFrame(self.main_view, fg_color="transparent")
+        self.table_frame.pack(expand=True, fill="both", padx=27, pady=21)
+        self.table = CTkTable(self.table_frame, values=table_data, colors=["#E6E6E6", "#EEEEEE"], header_color="#2A8C55", hover_color="#B4B4B4")
+        self.table.edit_row(0, text_color="#fff", hover_color="#2A8C55")
+        self.table.pack(expand=True)
 
         # Fetch temperature
         self.fetch_sensor_data()
