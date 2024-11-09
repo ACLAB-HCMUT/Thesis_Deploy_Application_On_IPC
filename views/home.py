@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from PIL import Image
-<<<<<<< HEAD
 import requests
 import os
 from constant import *
@@ -108,75 +107,55 @@ class TemperatureDataVisualizer(ctk.CTkFrame):
         # Lên lịch cập nhật lại dữ liệu sau 1 ngày (86400 giây)
         self.after(86400, self.fetch_and_plot_data)
 
-=======
 from CTkTable import CTkTable
 import requests
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
 class HomeView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-<<<<<<< HEAD
         self.main_view = ctk.CTkFrame(self)
         self.main_view.grid_rowconfigure(0, weight=1)
         self.main_view.grid_rowconfigure(1, weight=2)
         self.main_view.grid_columnconfigure(1, weight=1)
 
-=======
         self.grid_columnconfigure(0, weight=1)
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
         # Set up sidebar
         self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55", width=170, height=600, corner_radius=0)
         self.sidebar_frame.pack_propagate(0)
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
 
-<<<<<<< HEAD
         self.logo_img_data = Image.open(os.path.join(base_path, "assets", "img", "logo.png"))
-=======
         self.logo_img_data = Image.open("assets/img/logo.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.logo_img = ctk.CTkImage(dark_image=self.logo_img_data, light_image=self.logo_img_data, size=(77.68, 85.42))
         self.logo = ctk.CTkLabel(master=self.sidebar_frame, text="", image=self.logo_img)
         self.logo.grid(row=0, column=0, pady=(38,0), sticky="ew")
 
         # Dashboard button
-<<<<<<< HEAD
         self.dashboard_img_data = Image.open(os.path.join(base_path, "assets", "img", "home_icon.png"))
-=======
         self.dashboard_img_data = Image.open("assets/img/home_icon.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.dashboard_img = ctk.CTkImage(dark_image=self.dashboard_img_data, light_image=self.dashboard_img_data)
         self.dashboard_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.dashboard_img, text="Dashboard", fg_color="#fff", font=("Arial Bold", 14), text_color="#2A8C55", hover_color="#eee", anchor="w")
         self.dashboard_btn.grid(row=1, column=0, padx=10, pady=(60,0), sticky="ew")
 
         # Devices button
-<<<<<<< HEAD
         self.devices_img_data = Image.open(os.path.join(base_path, "assets", "img", "devices_icon_transparent.png"))
-=======
         self.devices_img_data = Image.open("assets/img/devices_icon_transparent.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.devices_img = ctk.CTkImage(dark_image=self.devices_img_data, light_image=self.devices_img_data)
         self.devices_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.devices_img, text="Devices", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.devices_btn.grid(row=2, column=0, padx=10, pady=(16,0), sticky="ew")
         
         # Notification button
-<<<<<<< HEAD
         self.notification_img_data = Image.open(os.path.join(base_path, "assets", "img", "notification_icon_transparent.png"))
-=======
         self.notification_img_data = Image.open("assets/img/notification_icon_transparent.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.notification_img = ctk.CTkImage(dark_image=self.notification_img_data, light_image=self.notification_img_data)
         self.notification_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.notification_img, text="Notification", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.notification_btn.grid(row=3, column=0, padx=10, pady=(16,0), sticky="ew")
 
         # Settings button
-<<<<<<< HEAD
         self.settings_img_data = Image.open(os.path.join(base_path, "assets", "img", "settings_icon.png"))
-=======
         self.settings_img_data = Image.open("assets/img/settings_icon.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.settings_img = ctk.CTkImage(dark_image=self.settings_img_data, light_image=self.settings_img_data)
         self.settings_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.settings_img, text="Settings", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.settings_btn.grid(row=4, column=0, padx=10, pady=(16,0), sticky="ew")
@@ -194,16 +173,11 @@ class HomeView(ctk.CTkFrame):
         # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.title_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
-<<<<<<< HEAD
         self.title_frame.grid(row=0, column=0, columnspan=3, sticky="nsew", padx=27, pady=(29, 0))
-=======
         self.title_frame.pack(anchor="n", fill="x", padx=27, pady=(29, 0))
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
         self.orders_label = ctk.CTkLabel(self.title_frame, text="Dashboard", font=("Arial Black", 25), text_color="#2A8C55")
         self.orders_label.pack(anchor="nw", side="left")
-
-<<<<<<< HEAD
         # Khung chứa Temperature và Humidity
         self.metrics_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
         self.metrics_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=27, pady=(36, 0))
@@ -215,7 +189,6 @@ class HomeView(ctk.CTkFrame):
         self.temperature_metric.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
 
         self.temperature_img_data = Image.open(os.path.join(base_path, "assets", "img", "temperature_icon.png"))
-=======
         # self.new_orders = ctk.CTkButton(self.title_frame, text="+ New Order", font=("Arial Black", 15), text_color="#fff", fg_color="#2A8C55", hover_color="#207244")
         # self.new_orders.pack(anchor="ne", side="right")
 
@@ -229,14 +202,12 @@ class HomeView(ctk.CTkFrame):
         self.temperature_metric.pack(side="left", expand=True, anchor="center")
 
         self.temperature_img_data = Image.open("assets/img/temperature_icon.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.temperature_img = ctk.CTkImage(dark_image=self.temperature_img_data, light_image=self.temperature_img_data, size=(43, 43))
 
         self.temperature_img_label = ctk.CTkLabel(self.temperature_metric, image=self.temperature_img, text="")
         self.temperature_img_label.grid(row=0, column=0, rowspan=2, padx=(30, 5), pady=10)
 
         self.temperature_label = ctk.CTkLabel(self.temperature_metric, text="Temperature", font=("Arial", 16), text_color="#3b516e")
-<<<<<<< HEAD
         self.temperature_label.grid(row=0, column=1, sticky="sw", padx=(50, 0))
 
         self.temperature_number = ctk.CTkLabel(self.temperature_metric, text="Loading...", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
@@ -248,7 +219,6 @@ class HomeView(ctk.CTkFrame):
         self.humidity_metric.grid(row=0, column=2, sticky="nsew", padx=(10, 0))
 
         self.humidity_img_data = Image.open(os.path.join(base_path, "assets", "img", "humidity_icon.png"))
-=======
         self.temperature_label.grid(row=0, column=1,sticky="sw", padx=(50,0))
 
         self.temperature_number = ctk.CTkLabel(self.temperature_metric, text="Loading...", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
@@ -261,14 +231,12 @@ class HomeView(ctk.CTkFrame):
         self.humidity_metric.pack(side="right", expand=True, anchor="center")
 
         self.humidity_img_data = Image.open("assets/img/humidity_icon.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.humidity_img = ctk.CTkImage(dark_image=self.humidity_img_data, light_image=self.humidity_img_data, size=(43, 43))
 
         self.humidity_img_label = ctk.CTkLabel(self.humidity_metric, image=self.humidity_img, text="")
         self.humidity_img_label.grid(row=0, column=0, rowspan=2, padx=(30, 5), pady=10)
 
         self.humidity_label = ctk.CTkLabel(self.humidity_metric, text="Humidity", font=("Arial", 16), text_color="#3b516e")
-<<<<<<< HEAD
         self.humidity_label.grid(row=0, column=1, sticky="sw", padx=(50, 0))
 
         self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="40%", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
@@ -277,7 +245,6 @@ class HomeView(ctk.CTkFrame):
         # Biểu đồ 1 ở bên dưới, ở column=0
         self.chart_frame_1 = TemperatureDataVisualizer(self.main_view)
         self.chart_frame_1.grid(row=2, column=1, sticky="nsew", padx=10, pady=5)
-=======
         self.humidity_label.grid(row=0, column=1,sticky="sw", padx=(50,0))
 
         self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="40%", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
@@ -302,7 +269,6 @@ class HomeView(ctk.CTkFrame):
         self.table = CTkTable(self.table_frame, values=table_data, colors=["#E6E6E6", "#EEEEEE"], header_color="#2A8C55", hover_color="#B4B4B4")
         self.table.edit_row(0, text_color="#fff", hover_color="#2A8C55")
         self.table.pack(expand=True)
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
         # Fetch temperature
         self.fetch_sensor_data()
