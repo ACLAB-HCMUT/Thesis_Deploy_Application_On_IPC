@@ -1,9 +1,12 @@
 import customtkinter as ctk
 from PIL import Image
 import requests
+<<<<<<< HEAD
 import os
 from constant import *
 from CTkTable import CTkTable
+=======
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
 class DevicesView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
@@ -21,31 +24,51 @@ class DevicesView(ctk.CTkFrame):
         self.sidebar_frame.pack_propagate(0)
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
 
+<<<<<<< HEAD
         self.logo_img_data = Image.open(os.path.join(base_path, "assets", "img", "logo.png"))
+=======
+        self.logo_img_data = Image.open("assets/img/logo.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.logo_img = ctk.CTkImage(dark_image=self.logo_img_data, light_image=self.logo_img_data, size=(77.68, 85.42))
         self.logo = ctk.CTkLabel(master=self.sidebar_frame, text="", image=self.logo_img)
         self.logo.grid(row=0, column=0, pady=(38,0), sticky="ew")
 
         # Dashboard button
+<<<<<<< HEAD
         self.dashboard_img_data = Image.open(os.path.join(base_path, "assets", "img", "home_icon_transparent.png"))
+=======
+        self.dashboard_img_data = Image.open("assets/img/home_icon_transparent.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.dashboard_img = ctk.CTkImage(dark_image=self.dashboard_img_data, light_image=self.dashboard_img_data)
         self.dashboard_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.dashboard_img, text="Dashboard", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.dashboard_btn.grid(row=1, column=0, padx=10, pady=(60,0), sticky="ew")
 
         # Devices button
+<<<<<<< HEAD
         self.devices_img_data = Image.open(os.path.join(base_path, "assets", "img", "devices_icon.png"))
+=======
+        self.devices_img_data = Image.open("assets/img/devices_icon.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.devices_img = ctk.CTkImage(dark_image=self.devices_img_data, light_image=self.devices_img_data)
         self.devices_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.devices_img, text="Devices", fg_color="#fff", font=("Arial Bold", 14), text_color="#2A8C55", hover_color="#eee", anchor="w")
         self.devices_btn.grid(row=2, column=0, padx=10, pady=(16,0), sticky="ew")
 
         # Notification button
+<<<<<<< HEAD
         self.notification_img_data = Image.open(os.path.join(base_path, "assets", "img", "notification_icon_transparent.png"))
+=======
+        self.notification_img_data = Image.open("assets/img/notification_icon_transparent.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.notification_img = ctk.CTkImage(dark_image=self.notification_img_data, light_image=self.notification_img_data)
         self.notification_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.notification_img, text="Notification", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.notification_btn.grid(row=3, column=0, padx=10, pady=(16,0), sticky="ew")
 
         # Settings button
+<<<<<<< HEAD
         self.settings_img_data = Image.open( os.path.join(base_path, "assets", "img", "settings_icon.png"))
+=======
+        self.settings_img_data = Image.open("assets/img/settings_icon.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.settings_img = ctk.CTkImage(dark_image=self.settings_img_data, light_image=self.settings_img_data)
         self.settings_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.settings_img, text="Settings", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.settings_btn.grid(row=4, column=0, padx=10, pady=(16,0), sticky="ew")
@@ -55,7 +78,11 @@ class DevicesView(ctk.CTkFrame):
         self.signout_btn.pack(side="bottom", padx=10, pady=(0,10))
 
         # Set up main view
+<<<<<<< HEAD
         self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=640, height=600, corner_radius=0)
+=======
+        self.main_view = ctk.CTkFrame(self, fg_color="#fff",  width=640, height=600, corner_radius=0)
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.main_view.pack_propagate(0)
         self.main_view.pack(fill="y", anchor="w", side="left")
 
@@ -74,12 +101,17 @@ class DevicesView(ctk.CTkFrame):
         # Relays Group
         self.relay_group_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
         self.relay_group_frame.pack(anchor="n",fill="x", padx=27, pady=(36, 0))
+<<<<<<< HEAD
         self.relay_img_data = Image.open(os.path.join(base_path, "assets", "img", "relay_icon.png"))
+=======
+        self.relay_img_data = Image.open("assets/img/relay_icon.png")
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         self.relay_img = ctk.CTkImage(dark_image=self.relay_img_data, light_image=self.relay_img_data, size=(43, 43))
         
         # Create 6 relay switches
         self.create_switches(6)
 
+<<<<<<< HEAD
         self.table_frame_container = ctk.CTkFrame(self.main_view, fg_color="#D3D3D3")
         self.table_frame_container.pack(expand=True, fill="both", padx=10, pady=10)
 
@@ -101,6 +133,8 @@ class DevicesView(ctk.CTkFrame):
         self.table.edit_row(0, text_color="#fff", hover_color="#2A8C55")
         self.table.pack(expand=True, fill="both")
 
+=======
+>>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
         # Fetch relay data
         self.fetch_relay_data()
 
