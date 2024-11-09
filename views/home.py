@@ -10,27 +10,35 @@ import mplcyberpunk
 import matplotlib.dates as mdates
 
 
+try:
+    plt.style.use('cyberpunk')
+except ImportError:
+    print("mplcyberpunk chưa được cài đặt. Vui lòng chạy `pip install mplcyberpunk`.")
+
+# Class TemperatureDataVisualizer
 class TemperatureDataVisualizer(ctk.CTkFrame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
 
-        # Biểu đồ Nhiệt độ
-        self.figure1, self.ax1 = plt.subplots(figsize=(6, 4), dpi=100)
-        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self)
-        self.canvas1.get_tk_widget().grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        # Tạo một khung cuộn
+        self.scrollable_frame = ctk.CTkScrollableFrame(self)
+        self.scrollable_frame.pack(fill="both", expand=True, padx=0, pady=0)
 
-        # Biểu đồ Độ ẩm
-        self.figure2, self.ax2 = plt.subplots(figsize=(6, 4), dpi=100)
-        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self)
-        self.canvas2.get_tk_widget().grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        # Cấu hình biểu đồ 1
+        self.figure1, self.ax1 = plt.subplots(figsize=(4.7, 4.7), dpi=100)
+        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self.scrollable_frame)
+        self.canvas1.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
+        # Cấu hình biểu đồ 2
+        self.figure2, self.ax2 = plt.subplots(figsize=(4.7, 4.7), dpi=100)
+        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self.scrollable_frame)
+        self.canvas2.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Khởi tạo lần đầu và thiết lập cập nhật tự động
         self.fetch_and_plot_data()
 
-    # Hàm lấy dữ liệu từ API và tính nhiệt độ trung bình hàng ngày
     def fetch_data(self):
+        # Gửi yêu cầu GET đến API
         response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data")
         response.raise_for_status()  # Kiểm tra lỗi HTTP
         data = pd.DataFrame(response.json()["data"])  # Chuyển đổi dữ liệu thành DataFrame
@@ -50,31 +58,30 @@ class TemperatureDataVisualizer(ctk.CTkFrame):
         # Trả về hai bảng dữ liệu (temperature và humidity) để sử dụng cho biểu đồ
         return daily_avg_temp, daily_avg_humidity
 
-    # Hàm vẽ và cập nhật biểu đồ với các chấm và chú thích cho từng ngày
     def plot_temperature(self, daily_avg_temp, daily_avg_humidity):
         self.ax1.clear()
         self.ax2.clear()
 
         # Biểu đồ 1: Nhiệt độ
         self.ax1.plot(daily_avg_temp['date'], daily_avg_temp['temperature'], color='cyan', marker='o', linestyle='-', markersize=8)
-        self.ax1.set_title('Temperature')
+        self.ax1.set_title('Daily Average Temperature Over Time (Chart 1)')
         self.ax1.set_xlabel('Date')
         self.ax1.set_ylabel('Average Temperature')
         self.ax1.set_ylim(0, 100)
         self.ax1.set_yticks(range(0, 101, 20))
         self.ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        self.ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+        self.ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.figure1.autofmt_xdate(rotation=45)
 
         # Biểu đồ 2: Độ ẩm
         self.ax2.plot(daily_avg_humidity['date'], daily_avg_humidity['humidity'], color='magenta', marker='s', linestyle='-', markersize=8)
-        self.ax2.set_title('Humidity')
+        self.ax2.set_title('Daily Average Humidity Over Time (Chart 2)')
         self.ax2.set_xlabel('Date')
         self.ax2.set_ylabel('Average Humidity')
         self.ax2.set_ylim(0, 100)
         self.ax2.set_yticks(range(0, 101, 20))
         self.ax2.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+        self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.figure2.autofmt_xdate(rotation=45)
 
         # Hiển thị nhãn trên biểu đồ
@@ -96,7 +103,6 @@ class TemperatureDataVisualizer(ctk.CTkFrame):
         self.canvas1.draw()
         self.canvas2.draw()
 
-    # Hàm lấy dữ liệu và cập nhật biểu đồ sau mỗi 10 giây
     def fetch_and_plot_data(self):
         # Lấy dữ liệu từ API (bao gồm nhiệt độ và độ ẩm)
         daily_avg_temp, daily_avg_humidity = self.fetch_data()
@@ -112,10 +118,10 @@ class HomeView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.main_view = ctk.CTkFrame(self)
-        self.main_view.grid_rowconfigure(0, weight=1)
-        self.main_view.grid_rowconfigure(1, weight=2)
-        self.main_view.grid_columnconfigure(1, weight=1)
+        # self.main_view = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        # self.main_view.grid_rowconfigure(1, weight=2)
+        # self.main_view.grid_columnconfigure(1, weight=1)
 
 
         # Set up sidebar
@@ -157,61 +163,67 @@ class HomeView(ctk.CTkFrame):
         self.signout_btn.pack(side="bottom", padx=10, pady=(0,10))
 
         # Set up main view
-        self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=640, height=600, corner_radius=0)
+        self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=1000, height=600, corner_radius=0)
         self.main_view.pack_propagate(0)
-        self.main_view.pack(fill="y", anchor="w", side="left")
+        self.main_view.pack(fill="both", expand=True, anchor="w", side="left")
 
         # self.greeting = ctk.CTkLabel(self.main_view, text="")
         # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.title_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
-        self.title_frame.grid(row=0, column=0, columnspan=3, sticky="nsew", padx=27, pady=(29, 0))
+        self.title_frame.pack(anchor="n", fill="x", padx=27, pady=(29, 0))
 
         self.orders_label = ctk.CTkLabel(self.title_frame, text="Dashboard", font=("Arial Black", 25), text_color="#2A8C55")
         self.orders_label.pack(anchor="nw", side="left")
 
         # Khung chứa Temperature và Humidity
         self.metrics_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
-        self.metrics_frame.grid(row=1, column=0, columnspan=3, sticky="nsew", padx=27, pady=(36, 0))
-        self.metrics_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Đảm bảo ba cột được phân bổ đều
+        self.metrics_frame.pack(fill="both", padx=27, pady=(36, 0))
 
-        # Temperature nằm ở column=0
-        self.temperature_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6fdd9", width=250, height=70)
-        self.temperature_metric.grid_propagate(0)
-        self.temperature_metric.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+        
+        self.temperature_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6fdd9", width=300, height=70)
+        self.temperature_metric.pack(side="left", padx=(0, 10))
 
+        # Tải ảnh và tạo image
         self.temperature_img_data = Image.open(os.path.join(base_path, "assets", "img", "temperature_icon.png"))
         self.temperature_img = ctk.CTkImage(dark_image=self.temperature_img_data, light_image=self.temperature_img_data, size=(43, 43))
 
+        # Label cho hình ảnh
         self.temperature_img_label = ctk.CTkLabel(self.temperature_metric, image=self.temperature_img, text="")
-        self.temperature_img_label.grid(row=0, column=0, rowspan=2, padx=(30, 5), pady=10)
+        self.temperature_img_label.pack(side="left", padx=(30, 5), pady=10)
 
+        # Label cho tên "Temperature"
         self.temperature_label = ctk.CTkLabel(self.temperature_metric, text="Temperature", font=("Arial", 16), text_color="#3b516e")
-        self.temperature_label.grid(row=0, column=1, sticky="sw", padx=(50, 0))
+        self.temperature_label.pack(side="top", padx=(30, 30))  # Chuyển side thành "top"
 
         self.temperature_number = ctk.CTkLabel(self.temperature_metric, text="Loading...", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
-        self.temperature_number.grid(row=1, column=1, sticky="nw", padx=(50, 0), pady=(0, 10))
+        self.temperature_number.pack(side="top", padx=(30, 30), pady=(0, 10))  # Chuyển side thành "top"  # Đảm bảo ba cột được phân bổ đều
 
-        # Humidity nằm ở column=2
-        self.humidity_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6f0fd", width=250, height=70)
-        self.humidity_metric.grid_propagate(0)
-        self.humidity_metric.grid(row=0, column=2, sticky="nsew", padx=(10, 0))
 
+        #/////////////////////////////////////////
+
+
+        self.humidity_metric = ctk.CTkFrame(self.metrics_frame, fg_color="#d6f0fd", width=300, height=70)
+        self.humidity_metric.pack(side="left", padx=(0, 10))
+
+        # Tải ảnh và tạo image
         self.humidity_img_data = Image.open(os.path.join(base_path, "assets", "img", "humidity_icon.png"))
         self.humidity_img = ctk.CTkImage(dark_image=self.humidity_img_data, light_image=self.humidity_img_data, size=(43, 43))
 
+        # Label cho hình ảnh
         self.humidity_img_label = ctk.CTkLabel(self.humidity_metric, image=self.humidity_img, text="")
-        self.humidity_img_label.grid(row=0, column=0, rowspan=2, padx=(30, 5), pady=10)
+        self.humidity_img_label.pack(side="left", padx=(30, 5), pady=10)
 
-        self.humidity_label = ctk.CTkLabel(self.humidity_metric, text="Humidity", font=("Arial", 16), text_color="#3b516e")
-        self.humidity_label.grid(row=0, column=1, sticky="sw", padx=(50, 0))
+        # Label cho tên "humidity"
+        self.humidity_label = ctk.CTkLabel(self.humidity_metric, text="humidity", font=("Arial", 16), text_color="#3b516e")
+        self.humidity_label.pack(side="top", padx=(30, 30))  # Chuyển side thành "top"
 
-        self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="40%", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
-        self.humidity_number.grid(row=1, column=1, sticky="nw", padx=(50, 0), pady=(0, 10))
+        self.humidity_number = ctk.CTkLabel(self.humidity_metric, text="Loading...", font=("Arial Bold", 25), text_color="#3b516e", justify="left")
+        self.humidity_number.pack(side="top", padx=(30, 30), pady=(0, 10))  # Chuyển side thành "top"  # Đảm bảo ba cột được phân bổ đều
 
         # Biểu đồ 1 ở bên dưới, ở column=0
         self.chart_frame_1 = TemperatureDataVisualizer(self.main_view)
-        self.chart_frame_1.grid(row=2, column=1, sticky="nsew", padx=10, pady=5)
+        self.chart_frame_1.pack(expand=True, fill="both", padx=10, pady=10)
 
         # Fetch temperature
         self.fetch_sensor_data()

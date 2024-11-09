@@ -55,9 +55,9 @@ class DevicesView(ctk.CTkFrame):
         self.signout_btn.pack(side="bottom", padx=10, pady=(0,10))
 
         # Set up main view
-        self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=640, height=600, corner_radius=0)
+        self.main_view = ctk.CTkFrame(self, fg_color="#fff", width=1000, height=600, corner_radius=0)
         self.main_view.pack_propagate(0)
-        self.main_view.pack(fill="y", anchor="w", side="left")
+        self.main_view.pack(fill="both", expand=True, anchor="w", side="left")
 
         # self.greeting = ctk.CTkLabel(self.main_view, text="")
         # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
@@ -73,7 +73,7 @@ class DevicesView(ctk.CTkFrame):
 
         # Relays Group
         self.relay_group_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
-        self.relay_group_frame.pack(anchor="n",fill="x", padx=27, pady=(36, 0))
+        self.relay_group_frame.pack(anchor="nw",fill="x", padx=27, pady=(36, 0))
         self.relay_img_data = Image.open(os.path.join(base_path, "assets", "img", "relay_icon.png"))
         self.relay_img = ctk.CTkImage(dark_image=self.relay_img_data, light_image=self.relay_img_data, size=(43, 43))
         
