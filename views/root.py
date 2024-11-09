@@ -13,8 +13,4 @@ class Root(CTk):
         # self.minsize(width=min_width, height=min_height)
         self.title("My Application")
         self.grid_columnconfigure(0, weight=1)
-<<<<<<< HEAD
         self.grid_rowconfigure(0, weight=1)
-=======
-        self.grid_rowconfigure(0, weight=1)
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601

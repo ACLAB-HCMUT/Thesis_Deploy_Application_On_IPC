@@ -1,27 +1,17 @@
 import customtkinter as ctk
 from PIL import Image
-<<<<<<< HEAD
 import os
 from constant import *
-=======
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
 class SignInView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # Set up image
-<<<<<<< HEAD
         self.side_img_data = Image.open(os.path.join(base_path, "assets", "img", "side_img.png"))
         self.email_icon_data = Image.open(os.path.join(base_path, "assets", "img", "email_icon.png"))
         self.password_icon_data = Image.open(os.path.join(base_path, "assets", "img", "password_icon.png"))
         self.google_icon_data = Image.open(os.path.join(base_path, "assets", "img", "google_icon.png"))
-=======
-        self.side_img_data = Image.open("assets/img/side_img.png")
-        self.email_icon_data = Image.open("assets/img/email_icon.png")
-        self.password_icon_data = Image.open("assets/img/password_icon.png")
-        self.google_icon_data = Image.open("assets/img/google_icon.png")
->>>>>>> 3729710827dfcf61be214c7711f5aef27eb01601
 
         self.side_img = ctk.CTkImage(dark_image=self.side_img_data, light_image=self.side_img_data, size=(500, 600))
         self.email_icon = ctk.CTkImage(dark_image=self.email_icon_data, light_image=self.email_icon_data, size=(20, 20))
