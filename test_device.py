@@ -8,58 +8,93 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.dates as mdates
 import mplcyberpunk
 from constant import *
+try:
+    plt.style.use('cyberpunk')
+except ImportError:
+    print("mplcyberpunk chưa được cài đặt. Vui lòng chạy `pip install mplcyberpunk`.")
 
+# Class TemperatureDataVisualizer
 class TemperatureDataVisualizer(ctk.CTkFrame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self.configure_grid()
 
-        # Biểu đồ Nhiệt độ
-        self.figure1, self.ax1 = plt.subplots()
-        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self)
-        self.canvas1.get_tk_widget().grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        # Tạo một khung cuộn
+        self.scrollable_frame = ctk.CTkScrollableFrame(self)
+        self.scrollable_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Biểu đồ Độ ẩm
-        self.figure2, self.ax2 = plt.subplots()
-        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self)
-        self.canvas2.get_tk_widget().grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        # Cấu hình biểu đồ 1
+        self.figure1, self.ax1 = plt.subplots(figsize=(6, 6), dpi=100)
+        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self.scrollable_frame)
+        self.canvas1.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
+        # Cấu hình biểu đồ 2
+        self.figure2, self.ax2 = plt.subplots(figsize=(8, 8), dpi=100)
+        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self.scrollable_frame)
+        self.canvas2.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Khởi tạo lần đầu và thiết lập cập nhật tự động
         self.fetch_and_plot_data()
 
-    def configure_grid(self):
-        self.grid_columnconfigure((0, 1), weight=1)
-        self.grid_rowconfigure(0, weight=1)
-
     def fetch_data(self):
+        # Gửi yêu cầu GET đến API
         response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data")
-        response.raise_for_status()
-        data = pd.DataFrame(response.json()["data"])
-        data['timestamp'] = pd.to_datetime(data['timestamp'])
+        response.raise_for_status()  # Kiểm tra lỗi HTTP
+        data = pd.DataFrame(response.json()["data"])  # Chuyển đổi dữ liệu thành DataFrame
+
+        # Chuyển đổi timestamp thành kiểu datetime
+        data['timestamp'] = pd.to_datetime(data['timestamp'], format='%a, %d %b %Y %H:%M:%S %Z')
+
+        # Tạo cột ngày từ timestamp
         data['date'] = data['timestamp'].dt.date
 
+        # Tính toán nhiệt độ trung bình theo ngày
         daily_avg_temp = data.groupby('date')['temperature'].mean().reset_index()
+
+        # Tính toán độ ẩm trung bình theo ngày
         daily_avg_humidity = data.groupby('date')['humidity'].mean().reset_index()
 
+        # Trả về hai bảng dữ liệu (temperature và humidity) để sử dụng cho biểu đồ
         return daily_avg_temp, daily_avg_humidity
 
     def plot_temperature(self, daily_avg_temp, daily_avg_humidity):
         self.ax1.clear()
         self.ax2.clear()
 
-        # Biểu đồ Nhiệt độ
-        self.ax1.plot(daily_avg_temp['date'], daily_avg_temp['temperature'], color='cyan', marker='o', linestyle='-')
-        self.ax1.set(title='Temperature', xlabel='Date', ylabel='Avg Temperature (°C)', ylim=(0, 100))
+        # Biểu đồ 1: Nhiệt độ
+        self.ax1.plot(daily_avg_temp['date'], daily_avg_temp['temperature'], color='cyan', marker='o', linestyle='-', markersize=8)
+        self.ax1.set_title('Daily Average Temperature Over Time (Chart 1)')
+        self.ax1.set_xlabel('Date')
+        self.ax1.set_ylabel('Average Temperature')
+        self.ax1.set_ylim(0, 100)
+        self.ax1.set_yticks(range(0, 101, 20))
         self.ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        self.ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+        self.ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.figure1.autofmt_xdate(rotation=45)
 
-        # Biểu đồ Độ ẩm
-        self.ax2.plot(daily_avg_humidity['date'], daily_avg_humidity['humidity'], color='magenta', marker='s', linestyle='-')
-        self.ax2.set(title='Humidity', xlabel='Date', ylabel='Avg Humidity (%)', ylim=(0, 100))
+        # Biểu đồ 2: Độ ẩm
+        self.ax2.plot(daily_avg_humidity['date'], daily_avg_humidity['humidity'], color='magenta', marker='s', linestyle='-', markersize=8)
+        self.ax2.set_title('Daily Average Humidity Over Time (Chart 2)')
+        self.ax2.set_xlabel('Date')
+        self.ax2.set_ylabel('Average Humidity')
+        self.ax2.set_ylim(0, 100)
+        self.ax2.set_yticks(range(0, 101, 20))
         self.ax2.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+        self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.figure2.autofmt_xdate(rotation=45)
 
+        # Hiển thị nhãn trên biểu đồ
+        for ax in [self.ax1, self.ax2]:
+            for x, y in zip(daily_avg_temp['date'], daily_avg_temp['temperature']):
+                ax.annotate(f"{y:.1f}°C", 
+                            (x, y), 
+                            textcoords="offset points", 
+                            xytext=(0, 10), 
+                            ha='center', 
+                            color="yellow", 
+                            fontsize=8, 
+                            bbox=dict(facecolor="black", edgecolor="yellow", boxstyle="round,pad=0.3"))
+        
+        # Thêm hiệu ứng phát sáng
         mplcyberpunk.add_glow_effects(self.ax1)
         mplcyberpunk.add_glow_effects(self.ax2)
 
@@ -67,9 +102,14 @@ class TemperatureDataVisualizer(ctk.CTkFrame):
         self.canvas2.draw()
 
     def fetch_and_plot_data(self):
+        # Lấy dữ liệu từ API (bao gồm nhiệt độ và độ ẩm)
         daily_avg_temp, daily_avg_humidity = self.fetch_data()
+
+        # Vẽ biểu đồ nhiệt độ
         self.plot_temperature(daily_avg_temp, daily_avg_humidity)
-        self.after(86400, self.fetch_and_plot_data)  # Cập nhật mỗi ngày
+
+        # Lên lịch cập nhật lại dữ liệu sau 1 ngày (86400 giây)
+        self.after(86400, self.fetch_and_plot_data)
 
 class HomeView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
@@ -109,13 +149,11 @@ class HomeView(ctk.CTkFrame):
         main_view.grid_rowconfigure(1, weight=1)
         main_view.grid_columnconfigure(0, weight=1)
 
-        self.create_metrics_frame(main_view)
+        self.create_dashboard_title(main_view)  # Gọi phương thức tạo tiêu đề dashboard
 
-        self.create_dashboard_title(main_view)
+        self.create_metrics_frame(main_view)    # Gọi phương thức tạo khung metrics
 
-        # Khung biểu đồ
-        chart_frame = TemperatureDataVisualizer(main_view)
-        chart_frame.grid(row=1, column=0, sticky="nsew", padx=27, pady=20)
+        self.view_dashboard(main_view)          # Gọi phương thức hiển thị biểu đồ
 
         return main_view
 
@@ -145,6 +183,10 @@ class HomeView(ctk.CTkFrame):
 
         ctk.CTkLabel(metric_frame, text=label, font=("Arial", 16), text_color=text_color).grid(row=0, column=1, sticky="sw", padx=(50, 0))
         ctk.CTkLabel(metric_frame, text=value_text, font=("Arial Bold", 25), text_color=text_color).grid(row=1, column=1, sticky="nw", padx=(50, 0), pady=(0, 10))
+
+    def view_dashboard(self, parent):
+        chart_frame = TemperatureDataVisualizer(parent)
+        chart_frame.grid(row=2, column=0, sticky="nsew", padx=27, pady=20)
 
 app = ctk.CTk()
 app.title("Dashboard")

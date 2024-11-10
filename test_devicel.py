@@ -17,27 +17,20 @@ except ImportError:
 class TemperatureDataVisualizer(ctk.CTkFrame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self.grid_columnconfigure(0, weight=1)  # Cột đầu tiên cho biểu đồ 1
-        self.grid_columnconfigure(1, weight=1)  # Cột thứ hai cho biểu đồ 2
-        self.grid_rowconfigure(0, weight=3)  # Dành phần lớn cho biểu đồ
+
+        # Tạo một khung cuộn
+        self.scrollable_frame = ctk.CTkScrollableFrame(self)
+        self.scrollable_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Cấu hình biểu đồ 1
-        self.figure1, self.ax1 = plt.subplots(figsize=(6, 4), dpi=100)
-        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self)
-        self.canvas1.get_tk_widget().grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        self.figure1, self.ax1 = plt.subplots(figsize=(6, 6), dpi=100)
+        self.canvas1 = FigureCanvasTkAgg(self.figure1, master=self.scrollable_frame)
+        self.canvas1.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
         # Cấu hình biểu đồ 2
-        self.figure2, self.ax2 = plt.subplots(figsize=(6, 4), dpi=100)
-        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self)
-        self.canvas2.get_tk_widget().grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
-
-        # Tạo frame cho bảng dữ liệu
-        self.table_frame = ctk.CTkFrame(self)
-        self.table_frame.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
-
-        # Cấu hình các widget cho bảng dữ liệu
-        self.table = ctk.CTkTextbox(self.table_frame, height=10, width=50)
-        self.table.pack(fill="both", expand=True)
+        self.figure2, self.ax2 = plt.subplots(figsize=(8, 8), dpi=100)
+        self.canvas2 = FigureCanvasTkAgg(self.figure2, master=self.scrollable_frame)
+        self.canvas2.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
         # Khởi tạo lần đầu và thiết lập cập nhật tự động
         self.fetch_and_plot_data()
@@ -108,29 +101,12 @@ class TemperatureDataVisualizer(ctk.CTkFrame):
         self.canvas1.draw()
         self.canvas2.draw()
 
-    def update_table(self, daily_avg_temp, daily_avg_humidity):
-        # Cập nhật dữ liệu vào bảng
-        # Xóa hết dữ liệu cũ trong bảng
-        self.table.delete(1.0, ctk.END)
-
-        # Thêm dữ liệu vào bảng
-        for temp_row, humidity_row in zip(daily_avg_temp.iterrows(), daily_avg_humidity.iterrows()):
-            temp_date = temp_row[1]['date']
-            temp_value = temp_row[1]['temperature']
-            humidity_value = humidity_row[1]['humidity']
-
-            # Chèn dữ liệu vào bảng dưới dạng chuỗi
-            self.table.insert(ctk.END, f"Date: {temp_date} | Temp: {temp_value:.1f}°C | Humidity: {humidity_value:.1f}%\n")
-
     def fetch_and_plot_data(self):
         # Lấy dữ liệu từ API (bao gồm nhiệt độ và độ ẩm)
         daily_avg_temp, daily_avg_humidity = self.fetch_data()
 
         # Vẽ biểu đồ nhiệt độ
         self.plot_temperature(daily_avg_temp, daily_avg_humidity)
-
-        # Cập nhật bảng với dữ liệu mới (nhiệt độ và độ ẩm)
-        self.update_table(daily_avg_temp, daily_avg_humidity)
 
         # Lên lịch cập nhật lại dữ liệu sau 1 ngày (86400 giây)
         self.after(86400, self.fetch_and_plot_data)
