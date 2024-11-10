@@ -106,27 +106,6 @@ class DevicesView(ctk.CTkFrame):
         self.num_switches = num_switches
         for i in range(num_switches):
             self.add_relay(i)
-    #     for i in range(num_switches):
-    #         # Calculate row and column base on max column
-    #         self.row = i // self.max_col
-    #         self.col = i % self.max_col
-            
-    #         self.relay_frame = ctk.CTkFrame(self.relay_group_frame,border_color="#2A8C55", fg_color="transparent", border_width=2, width=178, height=60)
-    #         self.relay_frame.grid_propagate(0)
-    #         self.relay_frame.grid(row=self.row, column=self.col, padx=(15,0), pady=10)
-    #         self.relay_frames.append(self.relay_frame)
-
-    #         self.relay_img_label = ctk.CTkLabel(self.relay_frames[i], image=self.relay_img, text="")
-    #         self.relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,0), pady=(10,10))
-    #         self.relay_img_labels.append(self.relay_img_label)
-
-    #         self.relay_label = ctk.CTkLabel(self.relay_frames[i], text=f"Relay {i + 1}", font=("Arial Black", 15), text_color="#2A8C55")
-    #         self.relay_label.grid(row=0, column=1, pady=(2,0))
-    #         self.relay_labels.append(self.relay_label)
-
-    #         self.relay_switch = ctk.CTkSwitch(self.relay_frames[i], switch_width=60, switch_height=25, text="", command=lambda i=i: self.toggle_switch(i), onvalue="ON", offvalue="OFF")
-    #         self.relay_switch.grid(row=1, column=1, padx=(20,5), pady=(0,10))
-    #         self.switches.append(self.relay_switch)
 
     def add_relay(self, index=None):
         if index is None:
@@ -179,6 +158,8 @@ class DevicesView(ctk.CTkFrame):
             response = requests.patch(url, json=data)
         except requests.RequestException as e:
             print("An error occurred:", e)
+        
+        self.get_relay_history()
 
     # Function to fetch status of relay
     def fetch_relay_data(self):
@@ -197,25 +178,9 @@ class DevicesView(ctk.CTkFrame):
 
     # Function to fetch data from a URL and update the table
     def get_relay_history(self):
-        response = requests.get("http://10.28.128.126:8080/api/data/relay_history").json()
+        response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay_history").json()
         data = response["data"]
 
-        try:
-            new_table_data = [["Relay Name", "Status", "Time"]]
-            for entry in data:
-                print(entry.get("relayName",""))
-                new_table_data.append([
-                    entry.get("relayName", ""),
-                    entry.get("status", ""),
-                    entry.get("timestamp", "")
-                ])
-
-            # Update the table data
-            # print the new_table_data
-            print(new_table_data)
-            self.table_data = new_table_data
-            print(self.table_data)
-            self.table.configure(values=self.table_data)
-
-        except requests.RequestException as e:
-            print(f"Error fetching data: {e}")
+        for item in data:
+            row = list(item.values())[1:]
+            self.table.add_row(row)              
