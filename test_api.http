@@ -99,3 +99,6 @@ Content-Type: application/json
 {
     "relayName": "nutnhan1"
 }
+
+### Get relay history
+GET http://10.28.128.126:8080/api/data/relay_history
