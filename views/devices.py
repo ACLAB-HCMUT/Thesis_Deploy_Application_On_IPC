@@ -15,6 +15,7 @@ class DevicesView(ctk.CTkFrame):
         self.relay_img_labels = []
         self.relay_labels = []
         self.max_col = 3
+        self.num_switches = 0
 
         # Set up sidebar
         self.sidebar_frame = ctk.CTkFrame(self, fg_color="#2A8C55",  width=170, height=600, corner_radius=0)
@@ -59,16 +60,13 @@ class DevicesView(ctk.CTkFrame):
         self.main_view.pack_propagate(0)
         self.main_view.pack(fill="y", anchor="w", side="left")
 
-        # self.greeting = ctk.CTkLabel(self.main_view, text="")
-        # self.greeting.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
-
         self.title_frame = ctk.CTkFrame(self.main_view, fg_color="transparent")
         self.title_frame.pack(anchor="n", fill="x", padx=27, pady=(29, 0))
 
         self.orders_label = ctk.CTkLabel(self.title_frame, text="Devices", font=("Arial Black", 25), text_color="#2A8C55")
         self.orders_label.pack(anchor="nw", side="left")
 
-        self.new_orders = ctk.CTkButton(self.title_frame, text="+ New Device", font=("Arial Black", 15), text_color="#fff", fg_color="#2A8C55", hover_color="#207244")
+        self.new_orders = ctk.CTkButton(self.title_frame, text="+ New Device", font=("Arial Black", 15), text_color="#fff", fg_color="#2A8C55", hover_color="#207244", command=self.add_new_relay_dynamically)
         self.new_orders.pack(anchor="ne", side="right")
 
         # Relays Group
@@ -78,21 +76,17 @@ class DevicesView(ctk.CTkFrame):
         self.relay_img = ctk.CTkImage(dark_image=self.relay_img_data, light_image=self.relay_img_data, size=(43, 43))
         
         # Create 6 relay switches
-        self.create_switches(6)
+        self.create_switches(3)
 
-        self.table_frame_container = ctk.CTkFrame(self.main_view, fg_color="#D3D3D3")
-        self.table_frame_container.pack(expand=True, fill="both", padx=10, pady=10)
+        # self.table_frame_container = ctk.CTkFrame(self.main_view, fg_color="#D3D3D3")
+        # self.table_frame_container.pack(expand=True, fill="both", padx=10, pady=10)
 
-        self.table_frame = ctk.CTkScrollableFrame(self.table_frame_container, fg_color="transparent")
+        self.table_frame = ctk.CTkScrollableFrame(self.main_view, fg_color="transparent")
         self.table_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
         # Table Data
         self.table_data = [
-            ["Relay ID", "Relay Name", "Status", "Time"],
-            ['1', 'Máy bơm 1', 'On', '12:00 1/11/2024'],
-            ['2', 'Máy bơm 2', 'Off', '12:00 1/11/2024'],
-            ['3', 'Máy bơm 3', 'On', '12:00 2/11/2024'],
-            ['4', 'Máy bơm 4', 'Off', '12:00 2/11/2024']
+            ["Relay Name", "Status", "Time"]
         ]
 
         # Create Table
@@ -104,29 +98,75 @@ class DevicesView(ctk.CTkFrame):
         # Fetch relay data
         self.fetch_relay_data()
 
+        # Fetch relay history
+        self.get_relay_history()
+
     # Function to create a specified number of switches
     def create_switches(self, num_switches):
+        self.num_switches = num_switches
         for i in range(num_switches):
-            # Calculate row and column base on max column
-            self.row = i // self.max_col
-            self.col = i % self.max_col
+            self.add_relay(i)
+    #     for i in range(num_switches):
+    #         # Calculate row and column base on max column
+    #         self.row = i // self.max_col
+    #         self.col = i % self.max_col
             
-            self.relay_frame = ctk.CTkFrame(self.relay_group_frame,border_color="#2A8C55", fg_color="transparent", border_width=2, width=178, height=60)
-            self.relay_frame.grid_propagate(0)
-            self.relay_frame.grid(row=self.row, column=self.col, padx=(15,0), pady=10)
-            self.relay_frames.append(self.relay_frame)
+    #         self.relay_frame = ctk.CTkFrame(self.relay_group_frame,border_color="#2A8C55", fg_color="transparent", border_width=2, width=178, height=60)
+    #         self.relay_frame.grid_propagate(0)
+    #         self.relay_frame.grid(row=self.row, column=self.col, padx=(15,0), pady=10)
+    #         self.relay_frames.append(self.relay_frame)
 
-            self.relay_img_label = ctk.CTkLabel(self.relay_frames[i], image=self.relay_img, text="")
-            self.relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,0), pady=(10,10))
-            self.relay_img_labels.append(self.relay_img_label)
+    #         self.relay_img_label = ctk.CTkLabel(self.relay_frames[i], image=self.relay_img, text="")
+    #         self.relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,0), pady=(10,10))
+    #         self.relay_img_labels.append(self.relay_img_label)
 
-            self.relay_label = ctk.CTkLabel(self.relay_frames[i], text=f"Relay {i + 1}", font=("Arial Black", 15), text_color="#2A8C55")
-            self.relay_label.grid(row=0, column=1, pady=(2,0))
-            self.relay_labels.append(self.relay_label)
+    #         self.relay_label = ctk.CTkLabel(self.relay_frames[i], text=f"Relay {i + 1}", font=("Arial Black", 15), text_color="#2A8C55")
+    #         self.relay_label.grid(row=0, column=1, pady=(2,0))
+    #         self.relay_labels.append(self.relay_label)
 
-            self.relay_switch = ctk.CTkSwitch(self.relay_frames[i], switch_width=60, switch_height=25, text="", command=lambda i=i: self.toggle_switch(i), onvalue="ON", offvalue="OFF")
-            self.relay_switch.grid(row=1, column=1, padx=(20,5), pady=(0,10))
-            self.switches.append(self.relay_switch)
+    #         self.relay_switch = ctk.CTkSwitch(self.relay_frames[i], switch_width=60, switch_height=25, text="", command=lambda i=i: self.toggle_switch(i), onvalue="ON", offvalue="OFF")
+    #         self.relay_switch.grid(row=1, column=1, padx=(20,5), pady=(0,10))
+    #         self.switches.append(self.relay_switch)
+
+    def add_relay(self, index=None):
+        if index is None:
+            index = self.num_switches
+            self.num_switches += 1
+
+        # Calculate row and column based on max_col
+        row = index // self.max_col
+        col = index % self.max_col
+
+        # Create frame, label, and switch for the relay
+        relay_frame = ctk.CTkFrame(self.relay_group_frame, border_color="#2A8C55", fg_color="transparent", border_width=2, width=178, height=60)
+        relay_frame.grid_propagate(0)
+        relay_frame.grid(row=row, column=col, padx=(15,0), pady=10)
+        self.relay_frames.append(relay_frame)
+
+        relay_img_label = ctk.CTkLabel(relay_frame, image=self.relay_img, text="")
+        relay_img_label.grid(row=0, column=0, rowspan=2, padx=(12,0), pady=(10,10))
+        self.relay_img_labels.append(relay_img_label)
+
+        relay_label = ctk.CTkLabel(relay_frame, text=f"Relay {index + 1}", font=("Arial Black", 15), text_color="#2A8C55")
+        relay_label.grid(row=0, column=1, pady=(2,0))
+        self.relay_labels.append(relay_label)
+
+        relay_switch = ctk.CTkSwitch(relay_frame, switch_width=60, switch_height=25, text="", command=lambda i=index: self.toggle_switch(i), onvalue="ON", offvalue="OFF")
+        relay_switch.grid(row=1, column=1, padx=(20,5), pady=(0,10))
+        self.switches.append(relay_switch)
+
+    def add_new_relay_dynamically(self):
+        # Call add_relay to add one more relay at runtime
+        self.add_relay()
+        url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/create"
+        data = {
+            "relayName": f"nutnhan{self.num_switches}",
+            "status": "OFF"
+        }
+        try:
+            response = requests.post(url, json=data)
+        except requests.RequestException as e:
+            print("An error occurred:", e)
 
     # Function to toggle relay switch
     def toggle_switch(self, switch):
@@ -146,7 +186,7 @@ class DevicesView(ctk.CTkFrame):
         response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay/all").json()
         data = response["data"]
 
-        for i in range(len(data)):
+        for i in range(self.num_switches):
             if data[i].get("status") == "ON":
                 self.switches[i].select()
             else:
@@ -154,3 +194,28 @@ class DevicesView(ctk.CTkFrame):
         
         # Schedule the next data fetch in 10 seconds
         self.after(10000, self.fetch_relay_data)
+
+    # Function to fetch data from a URL and update the table
+    def get_relay_history(self):
+        response = requests.get("http://10.28.128.126:8080/api/data/relay_history").json()
+        data = response["data"]
+
+        try:
+            new_table_data = [["Relay Name", "Status", "Time"]]
+            for entry in data:
+                print(entry.get("relayName",""))
+                new_table_data.append([
+                    entry.get("relayName", ""),
+                    entry.get("status", ""),
+                    entry.get("timestamp", "")
+                ])
+
+            # Update the table data
+            # print the new_table_data
+            print(new_table_data)
+            self.table_data = new_table_data
+            print(self.table_data)
+            self.table.configure(values=self.table_data)
+
+        except requests.RequestException as e:
+            print(f"Error fetching data: {e}")
