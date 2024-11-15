@@ -14,7 +14,7 @@ class NotificationController:
         self.frame.signout_btn.configure(command=self.logout)
         self.frame.dashboard_btn.configure(command=self.dashboard)
         self.frame.devices_btn.configure(command=self.devices)
-
+        self.frame.settings_btn.configure(command=self.settings)
     def logout(self) -> None:
         self.model.auth.logout()
 
@@ -23,7 +23,9 @@ class NotificationController:
 
     def devices(self) -> None:
         self.view.switch("devices")
-        
+    
+    def settings(self) -> None:
+        self.view.switch("settings")
     # def update_view(self) -> None:
     #     current_user = self.model.auth.current_user
     #     if current_user:
