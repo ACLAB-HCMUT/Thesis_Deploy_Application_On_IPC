@@ -1,0 +1,13 @@
+build
+dist
+__pycache__
+.vscode
+demo_frontend.spec
+mqtt.py
+uart.py
+<<<<<<< HEAD
+note.txt
+myenv
+=======
+note.txt
+>>>>>>> e9bab437f0db0820a6b15607368a26f3c80b1bee
