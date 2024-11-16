@@ -6,6 +6,7 @@ from .signin import SignInView
 from .signup import SignUpView
 from .devices import DevicesView
 from .notification import NotificationView
+from .settings import SettingsView
 
 class Frames(TypedDict):
     signup: SignUpView
@@ -13,6 +14,7 @@ class Frames(TypedDict):
     home: HomeView
     devices: DevicesView
     notification: NotificationView
+    settings: SettingsView
 
 class View:
     def __init__(self):
@@ -24,6 +26,7 @@ class View:
         self._add_frame(HomeView, "home")
         self._add_frame(DevicesView, "devices")
         self._add_frame(NotificationView, "notification")
+        self._add_frame(SettingsView, "settings")
 
     def _add_frame(self, Frame, name: str) -> None:
         self.frames[name] = Frame(self.root)

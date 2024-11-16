@@ -7,7 +7,7 @@ from .signin import SignInController
 from .signup import SignUpController
 from .devices import DevicesController
 from .notification import NotificationController
-
+from .settings import SettingsController
 class Controller:
     def __init__(self, model: Model, view: View) -> None:
         self.view = view
@@ -17,6 +17,7 @@ class Controller:
         self.home_controller = HomeController(model, view)
         self.devices_controller = DevicesController(model, view)
         self.notification_controller = NotificationController(model, view)
+        self.settings_controller = SettingsController(model, view)
 
         self.model.auth.add_event_listener("auth_changed", self.auth_state_listener)
 
