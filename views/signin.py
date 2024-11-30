@@ -41,11 +41,11 @@ class SignInView(ctk.CTkFrame):
         # Password entry
         self.email_label = ctk.CTkLabel(self.login_frame,text="  Password:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.password_icon, compound="left").pack(anchor="w", padx=(25, 0))
         self.password_entry = ctk.CTkEntry(self.login_frame, width=225, show="*", fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.password_entry.pack(anchor="w", padx=(25, 0))
+        self.password_entry.pack(anchor="w", pady=(0, 20), padx=(25, 0))
 
         # Forgot password label
-        self.forgot_password = ctk.CTkLabel(self.login_frame, text="Forgot your password?", font=("Arial", 12), text_color="#601E88", anchor="w")
-        self.forgot_password.pack(anchor="w", pady=(5, 0), padx=(128, 0))
+        # self.forgot_password = ctk.CTkLabel(self.login_frame, text="Forgot your password?", font=("Arial", 12), text_color="#601E88", anchor="w")
+        # self.forgot_password.pack(anchor="w", pady=(5, 0), padx=(128, 0))
 
         # Login button
         self.login_btn = ctk.CTkButton(self.login_frame, text="Login", width=225, height=30, fg_color="#601E88", hover_color="#E6952D", text_color="#FFFFFF", font=("Arial Bold", 18))

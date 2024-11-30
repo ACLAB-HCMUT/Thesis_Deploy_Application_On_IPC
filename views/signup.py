@@ -38,37 +38,57 @@ class SignUpView(Frame):
         self.login_frame.pack(expand=True, side="right")
 
         # Sign up label
-        self.signup_label = ctk.CTkLabel(self.login_frame, text="Create New Account", font=ctk.CTkFont(size=28, weight="bold"), text_color="#601E88", anchor="w", justify="left").pack(anchor="w", pady=(50, 5), padx=(25, 0))
+        self.signup_label = ctk.CTkLabel(self.login_frame, text="Create New Account", font=ctk.CTkFont(size=28, weight="bold"), text_color="#601E88", anchor="w", justify="left").pack(anchor="w", pady=(30, 5), padx=(25, 0))
 
         # Fullname input
         self.fullname_label = ctk.CTkLabel(self.login_frame,text="  Full name:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.fullname_icon, compound="left").pack(anchor="w", pady=(15, 0), padx=(25, 0))
         self.fullname_input = ctk.CTkEntry(self.login_frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.fullname_input.pack(anchor="w", pady=(0, 15), padx=(25, 0))
+        self.fullname_input.pack(anchor="w", pady=(0, 0), padx=(25, 0))
+
+        # Fullname status label
+        self.fullname_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.fullname_status_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Email input
         self.email_label = ctk.CTkLabel(self.login_frame,text="  Email:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.email_icon, compound="left").pack(anchor="w", padx=(25, 0))
         self.email_input = ctk.CTkEntry(self.login_frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.email_input.pack(anchor="w", pady=(0, 15), padx=(25, 0))
+        self.email_input.pack(anchor="w", pady=(0, 0), padx=(25, 0))
+
+        # Email status label
+        self.email_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.email_status_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Password input
-        self.email_label = ctk.CTkLabel(self.login_frame,text="  Password:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.password_icon, compound="left").pack(anchor="w", padx=(25, 0))
+        self.password_label = ctk.CTkLabel(self.login_frame,text="  Password:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.password_icon, compound="left").pack(anchor="w", padx=(25, 0))
         self.password_input = ctk.CTkEntry(self.login_frame, width=225, show="*", fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.password_input.pack(anchor="w", pady=(0, 15), padx=(25, 0))
+        self.password_input.pack(anchor="w", pady=(0, 0), padx=(25, 0))
+
+        # Password status label
+        self.password_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.password_status_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Phone number input
         self.phone_label = ctk.CTkLabel(self.login_frame, text="  Phone number:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.phone_icon, compound="left").pack(anchor="w", padx=(25, 0))
         self.phone_input = ctk.CTkEntry(self.login_frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.phone_input.pack(anchor="w", pady=(0, 15), padx=(25, 0))
+        self.phone_input.pack(anchor="w", pady=(0, 0), padx=(25, 0))
+
+        # Phone status label
+        self.phone_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.phone_status_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Address input
         self.address_label = ctk.CTkLabel(self.login_frame, text="  Address:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=self.address_icon, compound="left").pack(anchor="w", padx=(25, 0))
         self.address_input = ctk.CTkEntry(self.login_frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000")
-        self.address_input.pack(anchor="w", pady=(0, 15), padx=(25, 0))
+        self.address_input.pack(anchor="w", pady=(0, 0), padx=(25, 0))
+
+        # Address status label
+        self.address_status_label = ctk.CTkLabel(self.login_frame, text="", font=("Arial", 12), text_color="#FF0000", anchor="w")
+        self.address_status_label.pack(anchor="w", pady=(0, 0), padx=(25, 0))
 
         # Sign Up button
         self.signup_btn = ctk.CTkButton(self.login_frame, text="Sign up", width=225, height=30, fg_color="#601E88", hover_color="#E6952D", text_color="#FFFFFF", font=("Arial Bold", 18))
-        self.signup_btn.pack(anchor="w", pady=(20, 0), padx=(25, 0))
+        self.signup_btn.pack(anchor="w", pady=(15, 0), padx=(25, 0))
 
         # Back to login button
         self.login_btn = ctk.CTkButton(self.login_frame, text="Back to login", width=225, height=30, fg_color="#EEEEE4", hover_color="#E6952D", text_color="#601E88", font=("Arial Bold", 18))
-        self.login_btn.pack(anchor="w", pady=(20, 0), padx=(25, 0))
+        self.login_btn.pack(anchor="w", pady=(15, 0), padx=(25, 0))

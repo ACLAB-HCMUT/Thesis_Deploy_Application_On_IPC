@@ -25,3 +25,6 @@ relay_OFF = [
 
 AIO_USERNAME_ADAFRUIT = "Vinhnguyen20"
 AIO_KEY_ADAFRUIT = "aio_aCdO74zXuAtwKCtrHqd966HOmDvI"
+
+# URL = "http://10.28.128.126:8080"
+URL= "https://do-an-ktmt-backend.onrender.com"

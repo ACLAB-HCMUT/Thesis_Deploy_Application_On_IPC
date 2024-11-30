@@ -4,7 +4,7 @@ import requests
 import os
 from constant import *
 from CTkTable import CTkTable
-
+from utils.constant import *
 class DevicesView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -137,7 +137,8 @@ class DevicesView(ctk.CTkFrame):
     def add_new_relay_dynamically(self):
         # Call add_relay to add one more relay at runtime
         self.add_relay()
-        url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/create"
+        # url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/create"
+        url = f"{URL}/api/data/relay/create"
         data = {
             "relayName": f"nutnhan{self.num_switches}",
             "status": "OFF"
@@ -149,7 +150,8 @@ class DevicesView(ctk.CTkFrame):
 
     # Function to toggle relay switch
     def toggle_switch(self, switch):
-        url = "https://do-an-ktmt-backend.onrender.com/api/data/relay/update"
+        # url = "http://10.28.128.126:8080/api/data/relay/update"
+        url = f"{URL}/api/data/relay/update"
         data = {
             "relayName": f"nutnhan{switch+1}",
             "status": self.switches[switch].get()
@@ -163,8 +165,8 @@ class DevicesView(ctk.CTkFrame):
 
     # Function to fetch status of relay
     def fetch_relay_data(self):
-        
-        response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay/all").json()
+        url = f"{URL}/api/data/relay/all"
+        response = requests.get(url).json()
         data = response["data"]
 
         for i in range(self.num_switches):
@@ -178,9 +180,16 @@ class DevicesView(ctk.CTkFrame):
 
     # Function to fetch data from a URL and update the table
     def get_relay_history(self):
-        response = requests.get("https://do-an-ktmt-backend.onrender.com/api/data/relay_history").json()
+        url = f"{URL}/api/data/relay_history"
+        response = requests.get(url).json()
         data = response["data"]
 
+        # Clear the table once
+        self.all_indices = list(range(len(self.table.values)))[1:]
+        self.table.delete_rows(self.all_indices)
+
+        # Add each row from the data
         for item in data:
             row = list(item.values())[1:]
-            self.table.add_row(row)              
+            self.table.add_row(row)
+              

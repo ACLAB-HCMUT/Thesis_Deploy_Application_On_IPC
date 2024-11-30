@@ -2,7 +2,7 @@ from models.main import Model
 from models.auth import User
 from views.main import View
 import requests
-
+from utils.constant import *
 class SignInController:
     def __init__(self, model: Model, view: View) -> None:
         self.model = model
@@ -23,7 +23,7 @@ class SignInController:
     def signin(self) -> None:
         email = self.frame.email_entry.get()
         password = self.frame.password_entry.get()
-        url = "https://do-an-ktmt-backend.onrender.com/api/users/login"
+        url = f"{URL}/api/users/login"
         data = {
             "email": email,
             "password": password

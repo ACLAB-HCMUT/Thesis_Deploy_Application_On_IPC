@@ -101,4 +101,4 @@ Content-Type: application/json
 }
 
 ### Get relay history
-GET http://10.28.128.126:8080/api/data/relay_history
+GET https://do-an-ktmt-backend.onrender.com/api/data/relay_history
