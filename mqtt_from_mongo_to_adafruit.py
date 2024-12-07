@@ -3,7 +3,6 @@ import json
 import time
 from pymongo import MongoClient
 from Adafruit_IO import MQTTClient
-from dotenv import load_dotenv
 
 # Tải biến môi trường (có thể bỏ qua nếu không sử dụng .env)
 # load_dotenv()
@@ -18,7 +17,7 @@ collection_relay = db["relay"]  # Relay collection
 
 # Thông tin Adafruit
 AIO_USERNAME = "Vinhnguyen20"
-AIO_KEY = "aio_KurW86etHXmNabVgDFcauPP9y80j"
+AIO_KEY = "aio_nOYm19Z21drHgorHsKjsOqH0QlcW"
 
 # Cấu hình MQTT
 def connected(client):

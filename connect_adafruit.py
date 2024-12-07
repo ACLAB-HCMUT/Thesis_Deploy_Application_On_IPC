@@ -7,8 +7,8 @@ from connect_to_rs485_relay import *
 from constant import *
 
 AIO_FEED_ID = ["nutnhan1", "nutnhan2", "nutnhan3", "nutnhan4"]
-AIO_USERNAME = AIO_USERNAME_ADAFRUIT
-AIO_KEY = AIO_KEY_ADAFRUIT
+AIO_USERNAME = ADAFRUIT_AIO_USERNAME
+AIO_KEY = ADAFRUIT_AIO_KEY
 
 def connected(client):
     print("Ket noi thanh cong ...")

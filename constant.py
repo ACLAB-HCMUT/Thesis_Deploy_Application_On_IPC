@@ -37,11 +37,9 @@ relay_OFF = {
     4: b'\x01\x05\x00\x03\x00\x00\x3D\xCA'   # Tắt relay 4
 }
 
-# AIO_USERNAME_ADAFRUIT = "Vinhnguyen20"
-# AIO_KEY_ADAFRUIT = "aio_KurW86etHXmNabVgDFcauPP9y80j"
 
-ADAFRUIT_AIO_USERNAME = "Vinhnguyen2003"
-ADAFRUIT_AIO_KEY      = "aio_wlvG09B8h1VY7PBP0bVCBHq9SoeX"
+ADAFRUIT_AIO_USERNAME = "Vinhnguyen20"
+ADAFRUIT_AIO_KEY      = "aio_nOYm19Z21drHgorHsKjsOqH0QlcW"
 
 # relay1_ON  = [1, 6, 0, 0, 0, 255, 201, 138]
 # relay1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
