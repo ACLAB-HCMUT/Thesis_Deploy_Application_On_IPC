@@ -2,6 +2,9 @@ import customtkinter as ctk
 from PIL import Image
 from datetime import datetime
 import random  # Temporary, simulates sensor data; replace with actual sensor data source
+import os
+from constant import *
+
 class NotificationView(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,31 +17,31 @@ class NotificationView(ctk.CTkFrame):
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
 
         # Logo
-        self.logo_img_data = Image.open("assets/img/logo.png")
+        self.logo_img_data = Image.open(os.path.join(base_path, "assets", "img", "logo.png"))
         self.logo_img = ctk.CTkImage(dark_image=self.logo_img_data, light_image=self.logo_img_data, size=(77.68, 85.42))
         self.logo = ctk.CTkLabel(master=self.sidebar_frame, text="", image=self.logo_img)
         self.logo.grid(row=0, column=0, pady=(38, 0), sticky="ew")
 
         # Dashboard button
-        self.dashboard_img_data = Image.open("assets/img/home_icon_transparent.png")
+        self.dashboard_img_data = Image.open(os.path.join(base_path, "assets", "img", "home_icon_transparent.png"))
         self.dashboard_img = ctk.CTkImage(dark_image=self.dashboard_img_data, light_image=self.dashboard_img_data)
         self.dashboard_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.dashboard_img, text="Dashboard", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.dashboard_btn.grid(row=1, column=0, padx=10, pady=(60, 0), sticky="ew")
 
         # Devices button
-        self.devices_img_data = Image.open("assets/img/devices_icon_transparent.png")
+        self.devices_img_data = Image.open(os.path.join(base_path, "assets", "img", "devices_icon_transparent.png"))
         self.devices_img = ctk.CTkImage(dark_image=self.devices_img_data, light_image=self.devices_img_data)
         self.devices_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.devices_img, text="Devices", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.devices_btn.grid(row=2, column=0, padx=10, pady=(16, 0), sticky="ew")
 
         # Notification button
-        self.notification_img_data = Image.open("assets/img/notification_icon.png")
+        self.notification_img_data = Image.open(os.path.join(base_path, "assets", "img", "notification_icon.png"))
         self.notification_img = ctk.CTkImage(dark_image=self.notification_img_data, light_image=self.notification_img_data)
         self.notification_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.notification_img, text="Notification", fg_color="#fff", font=("Arial Bold", 14), text_color="#2A8C55", hover_color="#eee", anchor="w")
         self.notification_btn.grid(row=3, column=0, padx=10, pady=(16, 0), sticky="ew")
 
         # Settings button
-        self.settings_img_data = Image.open("assets/img/settings_icon.png")
+        self.settings_img_data = Image.open(os.path.join(base_path, "assets", "img", "settings_icon.png"))
         self.settings_img = ctk.CTkImage(dark_image=self.settings_img_data, light_image=self.settings_img_data)
         self.settings_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.settings_img, text="Settings", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.settings_btn.grid(row=4, column=0, padx=10, pady=(16, 0), sticky="ew")
@@ -65,7 +68,7 @@ class NotificationView(ctk.CTkFrame):
 
         # Add example notifications with placeholder sensor data
         self.add_notification(
-            icon_path="assets/img/temperature_icon.png",
+            icon_path=os.path.join(base_path, "assets", "img", "temperature_icon.png"),
             title="Canh bao nhiet do",
             message="Nhiet do vuot nguong {temperature} do C",
             icon_color="#FF4444",
@@ -73,7 +76,7 @@ class NotificationView(ctk.CTkFrame):
         )
 
         self.add_notification(
-            icon_path="assets/img/humidity_icon.png",
+            icon_path=os.path.join(base_path, "assets", "img", "humidity_icon.png"),
             title="Canh bao do am khong khi",
             message="Do am khong khi vuot nguong {humidity}%",
             icon_color="#2196F3",
@@ -81,7 +84,7 @@ class NotificationView(ctk.CTkFrame):
         )
 
         self.add_notification(
-            icon_path="assets/img/pump_icon.png",
+            icon_path=os.path.join(base_path, "assets", "img", "pump_icon.png"),
             title="Canh bao may bom so 1 bat",
             message="Do am dat vuot nguong {soil_moisture}%, may bom so 1 bat",
             icon_color="#673AB7",
@@ -89,7 +92,7 @@ class NotificationView(ctk.CTkFrame):
         )
 
         self.add_notification(
-            icon_path="assets/img/soil_icon.png",
+            icon_path=os.path.join(base_path, "assets", "img", "soil_icon.png"),
             title="Canh bao do am dat",
             message="Do am am trung binh ngay hom nay la {average_soil_moisture}%",
             icon_color="#795548",

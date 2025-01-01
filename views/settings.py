@@ -2,6 +2,8 @@ import customtkinter as ctk
 from PIL import Image
 from CTkTable import CTkTable
 from datetime import datetime
+import os
+from constant import *
 
 class SettingsView(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -13,33 +15,33 @@ class SettingsView(ctk.CTkFrame):
         self.sidebar_frame.pack_propagate(0)
         self.sidebar_frame.pack(fill="y", anchor="w", side="left")
         # Logo
-        self.logo_img_data = Image.open("assets/img/logo.png")
+        self.logo_img_data = Image.open(os.path.join(base_path, "assets", "img", "logo.png"))
         self.logo_img = ctk.CTkImage(dark_image=self.logo_img_data, light_image=self.logo_img_data, size=(77.68, 85.42))
         self.logo = ctk.CTkLabel(master=self.sidebar_frame, text="", image=self.logo_img)
         self.logo.grid(row=0, column=0, pady=(38, 0), sticky="ew")
 
         # Dashboard button
-        self.dashboard_img_data = Image.open("assets/img/home_icon_transparent.png")
+        self.dashboard_img_data = Image.open(os.path.join(base_path, "assets", "img", "home_icon_transparent.png"))
         self.dashboard_img = ctk.CTkImage(dark_image=self.dashboard_img_data, light_image=self.dashboard_img_data)
         self.dashboard_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.dashboard_img, text="Dashboard", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.dashboard_btn.grid(row=1, column=0, padx=10, pady=(60, 0), sticky="ew")
 
         # Devices button
-        self.devices_img_data = Image.open("assets/img/devices_icon_transparent.png")
+        self.devices_img_data = Image.open(os.path.join(base_path, "assets", "img", "devices_icon_transparent.png"))
         self.devices_img = ctk.CTkImage(dark_image=self.devices_img_data, light_image=self.devices_img_data)
         self.devices_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.devices_img, text="Devices", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.devices_btn.grid(row=2, column=0, padx=10, pady=(16, 0), sticky="ew")
 
         # Notification button
-        self.notification_img_data = Image.open("assets/img/notification_icon_transparent.png")
+        self.notification_img_data = Image.open(os.path.join(base_path, "assets", "img", "notification_icon.png"))
         self.notification_img = ctk.CTkImage(dark_image=self.notification_img_data, light_image=self.notification_img_data)
-        self.notification_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.notification_img, text="Notification", fg_color="transparent", font=("Arial Bold", 14), hover_color="#eee", anchor="w")
+        self.notification_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.notification_img, text="Notification", fg_color="#fff", font=("Arial Bold", 14), text_color="#2A8C55", hover_color="#eee", anchor="w")
         self.notification_btn.grid(row=3, column=0, padx=10, pady=(16, 0), sticky="ew")
 
         # Settings button
-        self.settings_img_data = Image.open("assets/img/setting_switch.png")
+        self.settings_img_data = Image.open(os.path.join(base_path, "assets", "img", "settings_icon.png"))
         self.settings_img = ctk.CTkImage(dark_image=self.settings_img_data, light_image=self.settings_img_data)
-        self.settings_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.settings_img, text="Settings", fg_color="#fff", font=("Arial Bold", 14),  text_color="#2A8C55", hover_color="#eee", anchor="w")
+        self.settings_btn = ctk.CTkButton(master=self.sidebar_frame, image=self.settings_img, text="Settings", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w")
         self.settings_btn.grid(row=4, column=0, padx=10, pady=(16, 0), sticky="ew")
          # Main container frame
         self.main_frame = ctk.CTkFrame(self, fg_color="white", corner_radius=0)
@@ -60,7 +62,7 @@ class SettingsView(ctk.CTkFrame):
         self.title_frame.pack(fill="x", padx=20, pady=(10, 20))
         
         # Add leaf icon
-        self.leaf_icon = Image.open("assets/img/calendar_icon.png")
+        self.leaf_icon = Image.open(os.path.join(base_path, "assets", "img", "calendar_icon.png"))
         self.leaf_image = ctk.CTkImage(light_image=self.leaf_icon, dark_image=self.leaf_icon, size=(24, 24))
         self.leaf_label = ctk.CTkLabel(self.title_frame, image=self.leaf_image, text="")
         self.leaf_label.pack(side="left", padx=(0, 10))
@@ -220,7 +222,7 @@ class SettingsView(ctk.CTkFrame):
         )
         start_label.pack(side="left")
         
-        calendar_icon = Image.open("assets/img/calendar_icon.png")
+        calendar_icon = Image.open(os.path.join(base_path, "assets", "img", "calendar_icon.png"))
         calendar_image = ctk.CTkImage(light_image=calendar_icon, dark_image=calendar_icon, size=(20, 20))
         
         start_calendar = ctk.CTkButton(
