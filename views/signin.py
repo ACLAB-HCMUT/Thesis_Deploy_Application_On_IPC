@@ -9,7 +9,7 @@ class SignInView(ctk.CTkFrame):
 
         # Set up image
         
-        self.side_img_data = Image.open(os.path.join(base_path, "assets", "img", "side_img.png"))
+        self.side_img_data = Image.open(os.path.join(base_path, "assets", "img", "side_img.jpg"))
         self.email_icon_data = Image.open(os.path.join(base_path, "assets", "img", "email_icon.png"))
         self.password_icon_data = Image.open(os.path.join(base_path, "assets", "img", "password_icon.png"))
         self.google_icon_data = Image.open(os.path.join(base_path, "assets", "img", "google_icon.png"))
