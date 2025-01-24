@@ -4,6 +4,7 @@ import Navbar from './pages/Welcome/components/navbar.tsx';
 import HeroSection from './pages/Welcome/components/HeroSection.tsx';
 import Login from './pages/Login/Login.tsx';
 import Register from './pages/Register/Register.tsx';
+import Home from './pages/Home/Home.tsx';
 import './app.css';
 
 function App() {
@@ -32,6 +33,7 @@ function AppWrapper() {
         {/* Các route cho Login và Register */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home/>} />
       </Routes>
     </Router>
   );

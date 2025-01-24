@@ -60,9 +60,11 @@ export default function Login() {
                   </div>
 
                   <div className="mt-8">
-                    <button type="button" className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none">
-                      Sign in
-                    </button>
+                    <Link to="/home">
+                      <button type="button" className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none">
+                        Sign in
+                      </button>
+                    </Link>
                   </div>
 
                   <div className="flex items-center justify-center mt-9 mb-9">
