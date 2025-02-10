@@ -1,5 +1,8 @@
 import React from "react";
-import background from '../../assets/image/cut.png'
+// import background from '../../assets/image/cut.png'
+
+const background = require("../../assets/image/cut.png");
+
 import { Link } from "react-router-dom";
 
 export default function Login() {
