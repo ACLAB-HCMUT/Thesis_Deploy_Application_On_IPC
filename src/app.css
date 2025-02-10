@@ -1,0 +1,9 @@
+.welcome {
+    background-image: url('./assets/image/background_welcome.png');
+    background-size: cover;  /* Đảm bảo ảnh phủ toàn bộ phần tử */
+    background-position: top;  /* Căn hình ảnh vào phần trên của phần tử */
+    background-repeat: no-repeat;  /* Không lặp lại ảnh */
+    width: 100%;
+    height: 100vh;  /* Đảm bảo phần tử có chiều cao đầy đủ màn hình */
+  }
+  

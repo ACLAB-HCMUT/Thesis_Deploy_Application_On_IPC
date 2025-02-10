@@ -1,0 +1,16 @@
+{
+    "appId": "com.example.app",
+    "productName": "MyApp",
+    "files": [
+      "build/**/*",
+      "main/**/*",
+      "public/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      "main/utils/network.js"
+    ]
+  }
+  
