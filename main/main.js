@@ -33,6 +33,7 @@
 // });
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { session } = require('electron');
 
 function createWindow() {
     const win = new BrowserWindow({
