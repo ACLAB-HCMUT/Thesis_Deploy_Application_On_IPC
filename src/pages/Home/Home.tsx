@@ -40,6 +40,7 @@ import {
   Thermometer, Menu
 } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card.tsx';
+import Header from "../../components/common/Header.tsx";
 
 const powerData = [
   { month: 'Ja', value: 25 },
@@ -131,35 +132,36 @@ const HourlyForecast = ({ time, icon: Icon, temp }) => (
 );
 
 export default function Home() {
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
 
-  return (
+  return (    
     <main className="flex min-h-screen bg-gray-50">
       {/* Mobile menu button */}
-      <button
+      {/* <button
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         <Menu size={24} />
-      </button>
-
-      {/* Sidebar with responsive visibility */}
-      <div className={`
-        fixed inset-y-0 left-0 transform lg:relative lg:translate-x-0 transition duration-200 ease-in-out z-40
+      </button> */}
+      {/* fixed inset-y-0 left-0 transform lg:relative lg:translate-x-0 transition duration-200 ease-in-out z-40
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:block
+        lg:block */}
+      {/* Sidebar with responsive visibility */}
+      {/* <Header></Header> */}
+      <div className={`
+        
       `}>
         <Sidebar>
-          <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={true}/>
-          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={undefined}/>
-          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={undefined}/>
-          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={undefined}/>
-          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={undefined}/>
+          <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={true} to="home"/>
+          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={undefined} to="devices" />
+          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={undefined} to="notification" />
+          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={undefined} to="settings" />
+          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={undefined} to="authenticate"/>
         </Sidebar>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 ml-0 lg:ml-0">
+      <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
         {/* Power Charts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {[1, 2, 3, 4].map((index) => (

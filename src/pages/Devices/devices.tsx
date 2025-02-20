@@ -1,96 +1,138 @@
 import React from "react";
 import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
-import { House, TabletSmartphone, Bell, ShieldCheck, Monitor, Settings, Clock } from "lucide-react";
+import { SwitchToggle } from "../../components/common/Switch.tsx";
+import { House, TabletSmartphone, Bell, ShieldCheck, Monitor, Settings, Clock, Lamp, Microwave, RadioReceiver, MonitorSpeaker } from "lucide-react";
+
+const DeviceCard = ({ title, icon: Icon }) => (
+  <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-3 sm:p-6 shadow-lg border border-gray-100">
+    <div className="flex items-center gap-2 sm:gap-3 justify-between">
+      
+      <div className="flex flex-col items-center">
+        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg ">
+          <Icon className="text-blue-500 w-4 h-4 sm:w-6 sm:h-6" />
+        </div>
+        <p className="text-gray-500 text-xs sm:text-sm font-medium pt-1">{title}</p>
+        
+      </div>
+      <SwitchToggle/>
+    </div>
+  </div>
+);
 
 const Devices: React.FC = () => {
   return (
-    <div className="flex h-screen">
+    <main className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar>
-      <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={false}/>
-          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={true}/>
-          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={false}/>
-          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={false}/>
-          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={false}/>
+          <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={false} to="home"/>
+          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={true} to="devices"/>
+          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={false} to="notification" />
+          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={false} to="settings" />
+          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={false} to="authenticate" />
       </Sidebar>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 bg-gray-50">
-        <h1 className="text-2xl font-bold mb-6">My Devices</h1>
+      <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
+        {/* Device cards */}
+        <div className="grid grid:cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          <DeviceCard 
+            title="Relay 1" 
+            icon={Lamp}
+          />
+          <DeviceCard 
+            title="Relay 2"
+            icon={RadioReceiver}
+          />
+          <DeviceCard 
+            title="Relay 3" 
+            icon={MonitorSpeaker}
+          />
+          <DeviceCard 
+            title="Relay 4"
+            icon={Microwave}
+          />
+        </div>
 
-        {/* Device Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-4 bg-white rounded-lg shadow-md text-center">
-            <h2 className="font-medium text-lg">Relay 1</h2>
-            <button className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-lg">ON</button>
+        <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 gap-6 mt-5">
+          {/* Logs Section */}
+          <div className="rounded-lg col-span-1 md:col-span-3 lg:col-span-3">
+            <div className="w-full bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="max-h-64 overflow-y-auto">
+                <table className="w-full table-auto">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 text-left">Device</th>
+                      <th className="px-4 py-2 text-left">Status</th>
+                      <th className="px-4 py-2 text-left">Time Start</th>
+                      <th className="px-4 py-2 text-left">Time End</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    {[...Array(20)].map((_, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="px-4 py-2">Relay {index + 1}</td>
+                        <td className="px-4 py-2">{index % 2 === 0 ? "ON" : "OFF"}</td>
+                        <td className="px-4 py-2">13/11/2024 12:23:20</td>
+                        <td className="px-4 py-2">13/11/2024 14:23:20</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div className="p-4 bg-white rounded-lg shadow-md text-center">
-            <h2 className="font-medium text-lg">Relay 2</h2>
-            <button className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-lg">ON</button>
-          </div>
-          <div className="p-4 bg-white rounded-lg shadow-md text-center">
-            <h2 className="font-medium text-lg">Relay 3</h2>
-            <button className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-lg">ON</button>
-          </div>
-          <div className="p-4 bg-white rounded-lg shadow-md text-center">
-            <h2 className="font-medium text-lg">Relay 4</h2>
-            <button className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-lg">ON</button>
+
+          {/* Schedule Form */}
+          <div className="bg-slate-200 rounded-lg col-span-1 md:col-span-2 lg:col-span-1">
+            {/* <h2 className="text-2xl font-bold pt-3 pl-3">Schedule Relay</h2> */}
+            <form className="bg-white max-h-64 p-6 rounded-lg shadow-md">
+              <div className="mb-4">
+                <label className="block font-medium mb-2">Start Time</label>
+                <input type="datetime-local" className="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium mb-2">End Time</label>
+                <input type="datetime-local" className="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div className="flex justify-end gap-4">
+                <button type="submit" className="px-4 py-2 bg-indigo-500 text-white rounded-lg">
+                  Save
+                </button>
+                <button type="reset" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
-        {/* Logs Section */}
-        <div className="mt-8">
-          <h3 className="text-xl font-medium mb-4">Device Logs</h3>
-          <table className="w-full table-auto bg-white rounded-lg shadow-md">
-            <thead className="bg-indigo-100">
-              <tr>
-                <th className="px-4 py-2 text-left">Device</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">Time Start</th>
-                <th className="px-4 py-2 text-left">Time End</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border-t px-4 py-2">Relay 1</td>
-                <td className="border-t px-4 py-2">ON</td>
-                <td className="border-t px-4 py-2">13/11/2024 12:23:20</td>
-                <td className="border-t px-4 py-2">13/11/2024 12:23:20</td>
-              </tr>
-              <tr>
-                <td className="border-t px-4 py-2">Relay 1</td>
-                <td className="border-t px-4 py-2">OFF</td>
-                <td className="border-t px-4 py-2">13/11/2024 12:23:20</td>
-                <td className="border-t px-4 py-2">13/11/2024 14:23:20</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="mt-6 rounded-lg col-span-1 md:col-span-3 lg:col-span-3">
+          <div className="w-full bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="max-h-64 overflow-y-auto">
+              <table className="w-full table-auto">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Device</th>
+                    <th className="px-4 py-2 text-left">User</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-left">Time</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {[...Array(20)].map((_, index) => (
+                    <tr key={index} className="border-t">
+                      <td className="px-4 py-2">Relay {index + 1}</td>
+                      <td className="px-4 py-2">Vinh Nguyen</td>
+                      <td className="px-4 py-2">{index % 2 === 0 ? "ON" : "OFF"}</td>
+                      <td className="px-4 py-2">13/11/2024 14:23:20</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-
-        {/* Schedule Form */}
-        <div className="mt-8">
-          <h3 className="text-xl font-medium mb-4">Schedule Relay</h3>
-          <form className="bg-white p-6 rounded-lg shadow-md">
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Start Time</label>
-              <input type="datetime-local" className="w-full px-3 py-2 border rounded-lg" />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium mb-2">End Time</label>
-              <input type="datetime-local" className="w-full px-3 py-2 border rounded-lg" />
-            </div>
-            <div className="flex justify-end gap-4">
-              <button type="submit" className="px-4 py-2 bg-indigo-500 text-white rounded-lg">
-                Save
-              </button>
-              <button type="reset" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 };
 

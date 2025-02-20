@@ -6,6 +6,10 @@ import Login from './pages/Login/Login.tsx';
 import Register from './pages/Register/Register.tsx';
 import Home from './pages/Home/Home.tsx';
 import Devices from './pages/Devices/devices.tsx';
+import Notification from './pages/Notification/Notification.tsx';
+import Setting from './pages/Setting/Setting.tsx';
+import Authenticate from './pages/Authenticate/Authenticate.tsx';
+import Profile from './pages/Profile/Profile.tsx';
 import './app.css';
 
 function App() {
@@ -36,6 +40,17 @@ function AppWrapper() {
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home/>} />
         <Route path="/devices" element={<Devices/>} />
+        <Route path="/notification" element={<Notification/>} />
+        <Route path="/settings" element={<Setting/>} />
+        <Route path="/authenticate" element={<Authenticate/>} />
+        <Route path="/profile" element={<Profile 
+                                          firstname={"John"} 
+                                          lastname={"Doe"} 
+                                          username={"johndoe123"}
+                                          phone={"0123456789"}
+                                          gender={"Male"}
+                                          address={"123, ABC Street, XYZ City"} 
+                                          />} />
       </Routes>
     </Router>
   );
