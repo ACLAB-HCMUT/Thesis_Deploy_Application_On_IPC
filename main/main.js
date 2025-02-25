@@ -33,6 +33,7 @@
 // });
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { session } = require('electron');
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -54,6 +55,9 @@ function createWindow() {
     // win.webContents.openDevTools();
 }
 
+
+
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
@@ -62,8 +66,41 @@ app.on('window-all-closed', () => {
     }
 });
 
+
+
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
 });
+
+
+
+function showNotification(title, body) {
+    if (!Notification.isSupported()) {
+      return;
+    }
+  
+    const notification = new Notification({
+      title,
+      body,
+      icon: '../src/assets/image/logo.png', // Add your app icon path
+    });
+  
+    notification.show();
+  
+    // Send to renderer process to update Redux store
+    mainWindow.webContents.send('new-notification', {
+      id: Date.now(),
+      title,
+      message: body,
+      date: new Date().toISOString().split('T')[0],
+      isRead: false,
+    });
+  }
+  
+  // Listen for new notifications from renderer process
+  ipcMain.on('send-notification', (event, { title, body }) => {
+    showNotification(title, body);
+  });
+
