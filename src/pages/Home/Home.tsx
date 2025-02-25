@@ -150,17 +150,48 @@ export default function Home() {
         lg:block
       `}>
         <Sidebar>
-          <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={true}/>
-          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={undefined}/>
-          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={undefined}/>
-          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={undefined}/>
-          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={undefined}/>
-        </Sidebar>
+        <SidebarItem 
+          icon={<House size={20} />} 
+          text="Home" 
+          alert={false} 
+          active={location.pathname === '/home'}
+          to="/home"
+        />
+        <SidebarItem 
+          icon={<TabletSmartphone size={20} />} 
+          text="Devices" 
+          alert={false} 
+          active={location.pathname === '/devices'}
+          to="/devices"
+        />
+        <SidebarItem 
+          icon={<Bell size={20} />} 
+          text="Notification" 
+          alert={false} 
+          active={location.pathname === '/notifications'}
+          to="/notifications"
+        />
+        <SidebarItem 
+          icon={<Settings size={20} />} 
+          text="Settings" 
+          alert={false} 
+          active={location.pathname === '/settings'}
+          to="/settings"
+        />
+        <SidebarItem 
+          icon={<ShieldCheck size={20} />} 
+          text="Authenticate" 
+          alert={false} 
+          active={location.pathname === '/auth'}
+          to="/auth"
+        />
+      </Sidebar>
       </div>
 
       {/* Main content */}
       <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 ml-0 lg:ml-0">
         {/* Power Charts Grid */}
+        <h1 className="text-2xl font-bold mb-6">Home</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {[1, 2, 3, 4].map((index) => (
             <PowerChart key={index} />
