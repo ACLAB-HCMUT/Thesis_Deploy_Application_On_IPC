@@ -24,11 +24,41 @@ const Devices: React.FC = () => {
     <main className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar>
-          <SidebarItem icon={<House size={20} />} text="Home" alert={false} active={false} to="home"/>
-          <SidebarItem icon={<TabletSmartphone size={20} />} text="Devices" alert={false} active={true} to="devices"/>
-          <SidebarItem icon={<Bell size={20} />} text="Notification" alert={false} active={false} to="notification" />
-          <SidebarItem icon={<Settings size={20} />} text="Settings" alert={false} active={false} to="settings" />
-          <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={false} to="authenticate" />
+        <SidebarItem 
+          icon={<House size={20} />} 
+          text="Home" 
+          alert={false} 
+          active={location.pathname === '/home'}
+          to="/home"
+        />
+        <SidebarItem 
+          icon={<TabletSmartphone size={20} />} 
+          text="Devices" 
+          alert={false} 
+          active={location.pathname === '/devices'}
+          to="/devices"
+        />
+        <SidebarItem 
+          icon={<Bell size={20} />} 
+          text="Notification" 
+          alert={false} 
+          active={location.pathname === '/notifications'}
+          to="/notifications"
+        />
+        <SidebarItem 
+          icon={<Settings size={20} />} 
+          text="Settings" 
+          alert={false} 
+          active={location.pathname === '/settings'}
+          to="/settings"
+        />
+        <SidebarItem 
+          icon={<ShieldCheck size={20} />} 
+          text="Authenticate" 
+          alert={false} 
+          active={location.pathname === '/auth'}
+          to="/auth"
+        />
       </Sidebar>
 
       <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">

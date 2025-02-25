@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, RouterProvider } from 'react-router-dom';
 import Navbar from './pages/Welcome/components/navbar.tsx';
 import HeroSection from './pages/Welcome/components/HeroSection.tsx';
 import Login from './pages/Login/Login.tsx';
@@ -13,47 +14,38 @@ import Profile from './pages/Profile/Profile.tsx';
 import './app.css';
 
 function App() {
-  const location = useLocation();
-
   return (
-    <div
-    className="relative w-full h-screen welcome"
-  >
-    <div className="absolute top-0 left-0 w-full h-full bg-black opacity-35 z-10"></div>
-    <div className="relative z-20">
-      <Navbar />
-      <HeroSection />
+    <div className="relative w-full h-screen welcome">
+      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-35 z-10"></div>
+      <div className="relative z-20">
+        <Navbar />
+        <HeroSection />
+      </div>
     </div>
-  </div>
-
   );
 }
 
+const router = createBrowserRouter(
+  [
+    { path: "/", element: <App /> },
+    { path: "/login", element: <Login /> },
+    { path: "/register", element: <Register /> },
+    { path: "/home", element: <Home /> },
+    { path: "/devices", element: <Devices /> },
+    {path: "/notifications", element: <NotificationPage />},
+    {path: "/settings", element: <Setting />},
+    {path: "/auth", element: <Auth />},
+    {path: "/profile", element: <Profile />},
+  ],
+  {
+    future: {
+      v7_relativeSplatPath: true, // ✅ Bật flag v7 để tránh cảnh báo
+    },
+  }
+);
+
 function AppWrapper() {
-  return (
-    <Router>
-      <Routes>
-        {/* Trang mặc định */}
-        <Route path="/" element={<App />} />
-        {/* Các route cho Login và Register */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home/>} />
-        <Route path="/devices" element={<Devices/>} />
-        <Route path="/notification" element={<Notification/>} />
-        <Route path="/settings" element={<Setting/>} />
-        <Route path="/authenticate" element={<Authenticate/>} />
-        <Route path="/profile" element={<Profile 
-                                          firstname={"John"} 
-                                          lastname={"Doe"} 
-                                          username={"johndoe123"}
-                                          phone={"0123456789"}
-                                          gender={"Male"}
-                                          address={"123, ABC Street, XYZ City"} 
-                                          />} />
-      </Routes>
-    </Router>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default AppWrapper;
