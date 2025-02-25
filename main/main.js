@@ -75,6 +75,7 @@ app.on('activate', () => {
 });
 
 
+
 function showNotification(title, body) {
     if (!Notification.isSupported()) {
       return;
@@ -102,3 +103,4 @@ function showNotification(title, body) {
   ipcMain.on('send-notification', (event, { title, body }) => {
     showNotification(title, body);
   });
+
