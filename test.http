@@ -1,0 +1,11 @@
+### Đăng Nhập
+POST http://10.28.128.195:8000/api/users/signin
+Content-Type: application/json
+
+{
+    "email": "vinhnguyenkhac20@gmail.com",
+    "password": "123456"
+}
+
+### Lấy thông tin data
+GET http://10.28.128.195:8000/api/sensors/all/vinhnguyenkhac20@gmail.com

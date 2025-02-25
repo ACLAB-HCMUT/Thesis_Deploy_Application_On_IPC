@@ -1,18 +1,68 @@
-import React from "react";
+import { ConstructionIcon } from "lucide-react";
+import React, {useState} from "react";
 // import background from '../../assets/image/cut.png'
 
 const background = require("../../assets/image/cut.png");
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const [formData, setFormData] = useState({
+    email_username: "",
+    password: "",
+
+  });
+  
+  const navigate = useNavigate();
+
+  const handleChange  = (e) => {
+    setFormData({...formData, [e.target.id]: e.target.value.trim()});
+
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.email_username || !formData.password) {
+       return "All fields are required!";
+    }
+
+    try {
+      // dispatch(signInStart());
+      const isEmail = formData.email_username.includes("@");
+      const requestBody = {
+        email: isEmail ? formData.email_username : undefined,
+        username: !isEmail ? formData.email_username : undefined,
+        password: formData.password,
+      };
+      const res = await fetch("http://10.28.128.195:8000/api/users/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+     
+      const data = await res.json();
+      
+      if (res.status === 201) {
+        // dispatch(signInSuccess(data));
+        navigate("/home");
+      } else {
+        // dispatch(signInFailure(data.message));
+        console.log(data.message);
+      }
+    } catch (error){
+      // dispatch(signInFailure(error.message));
+      console.log(error.message);
+    }
+  }
   return (
     <div className="font-[sans-serif]">
       <div className="flex flex-col items-center justify-center w-full h-screen">
         <div className="grid md:grid-cols-2 items-center gap-4 max-md:gap-8 max-w-full w-full h-full m-0 rounded-md flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
             <div className="m-3 md:max-w-md w-full flex flex-col items-center justify-center">
-                <form className="w-full max-w-sm">
+                <form className="w-full max-w-sm" onSubmit={handleSubmit}>
                   <div className="mb-12 flex flex-col items-center justify-center">
                     <h3 className="text-gray-800 text-4xl font-bold">Welcome back!</h3>
                     <p className="text-sm mt-4 text-gray-800">Don't have an account 
@@ -23,7 +73,14 @@ export default function Login() {
                   <div>
                     <label className="text-gray-800 text-xs block mb-2">Email</label>
                     <div className="relative flex items-center">
-                      <input name="email" type="text" required className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" placeholder="Enter email" />
+                      <input 
+                        name="email" 
+                        type="text"
+                        id="email_username"
+                        onChange={handleChange} 
+                        required 
+                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" 
+                        placeholder="Enter email" />
                       <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" className="w-[18px] h-[18px] absolute right-2" viewBox="0 0 682.667 682.667">
                         <defs>
                           <clipPath id="a" clipPathUnits="userSpaceOnUse">
@@ -41,7 +98,14 @@ export default function Login() {
                   <div className="mt-8">
                     <label className="text-gray-800 text-xs block mb-2">Password</label>
                     <div className="relative flex items-center">
-                      <input name="password" type="password" required className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" placeholder="Enter password" />
+                      <input 
+                        name="password" 
+                        type="password" 
+                        id="password"
+                        onChange={handleChange}
+                        required 
+                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" 
+                        placeholder="Enter password" />
                       <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" className="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
                         <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
                       </svg>
@@ -63,11 +127,11 @@ export default function Login() {
                   </div>
 
                   <div className="mt-8">
-                    <Link to="/home">
-                      <button type="button" className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none">
+                    {/* <Link to="/home"> */}
+                      <button type="submit" className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none">
                         Sign in
                       </button>
-                    </Link>
+                    {/* </Link> */}
                   </div>
 
                   <div className="flex items-center justify-center mt-9 mb-9">
