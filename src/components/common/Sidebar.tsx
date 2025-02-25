@@ -56,7 +56,7 @@
 // }
 // src/components/Sidebar/index.tsx
 import React, { createContext, useContext, useState } from "react"
-import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react'
+import { useNavigate } from "react-router-dom"
 const Logo = require("../../assets/image/logo.png")
 
 const SidebarContext = createContext({ expanded: true })
@@ -86,18 +86,29 @@ export default function Sidebar({children}) {
     )
 }
 
-export function SidebarItem({icon, text, active, alert}) {
+export function SidebarItem({icon, text, active, alert, to}) {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (to) {
+            navigate(to);
+        }
+    };
+
     return (
-        <li className={`
-            relative flex items-center py-2 px-3 my-1
-            font-medium rounded-md cursor-pointer
-            transition-colors group
-            ${
-                active
-                ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-                : "hover:bg-indigo-50 text-gray-600"
-            }
-        `}>
+        <li 
+            onClick={handleClick}
+            className={`
+                relative flex items-center py-2 px-3 my-1
+                font-medium rounded-md cursor-pointer
+                transition-colors group
+                ${
+                    active
+                    ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
+                    : "hover:bg-indigo-50 text-gray-600"
+                }
+            `}
+        >
             {icon}
             <span className={`overflow-hidden transition-all w-0`}>{text}</span>
             {alert && <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400`}/>}

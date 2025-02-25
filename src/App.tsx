@@ -53,7 +53,11 @@ import Login from "./pages/Login/Login.tsx";
 import Register from "./pages/Register/Register.tsx";
 import Home from "./pages/Home/Home.tsx";
 import Devices from "./pages/Devices/devices.tsx";
+import NotificationPage from './pages/Notification/notification.tsx';
 import "./app.css";
+import Settings from "./pages/Setting/Settings.tsx";
+import Auth from "./pages/authentication/authentication.tsx";
+
 
 function App() {
   return (
@@ -74,6 +78,9 @@ const router = createBrowserRouter(
     { path: "/register", element: <Register /> },
     { path: "/home", element: <Home /> },
     { path: "/devices", element: <Devices /> },
+    {path: "/notifications", element: <NotificationPage />},
+    {path: "/settings", element: <Settings />},
+    {path: "/auth", element: <Auth />},
   ],
   {
     future: {

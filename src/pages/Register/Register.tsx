@@ -45,7 +45,7 @@ export default function Register() {
       }
       setLoading(false);
       if(res.ok){
-        navigate("/signin");
+        navigate("/login");
       }
     } catch (error){
       setErrorMessage(error.message);
@@ -65,7 +65,7 @@ export default function Register() {
                     <h3 className="text-gray-800 text-4xl font-bold">Get Started Now</h3>
                   </div>
 
-                  <div className="grid grid-cols-2 flex flex-col items-center justify-center">
+                  <div className="grid grid-cols-2 flex-col items-center justify-center">
                     <div className="mr-1.5">
                       <label className="text-gray-800 text-xs block">First Name</label>
                       <div className="relative flex items-center">
