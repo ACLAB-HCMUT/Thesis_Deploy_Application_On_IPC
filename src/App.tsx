@@ -1,15 +1,15 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation, RouterProvider } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Navbar from './pages/Welcome/components/navbar.tsx';
 import HeroSection from './pages/Welcome/components/HeroSection.tsx';
 import Login from './pages/Login/Login.tsx';
 import Register from './pages/Register/Register.tsx';
 import Home from './pages/Home/Home.tsx';
 import Devices from './pages/Devices/devices.tsx';
-import Notification from './pages/Notification/Notification.tsx';
-import Setting from './pages/Setting/Setting.tsx';
-import Authenticate from './pages/Authenticate/Authenticate.tsx';
+import NotificationPage from './pages/Notification/notification.tsx';
+import Setting from './pages/Setting/Settings.tsx';
+import Auth from './pages/authentication/authentication.tsx';
 import Profile from './pages/Profile/Profile.tsx';
 import './app.css';
 

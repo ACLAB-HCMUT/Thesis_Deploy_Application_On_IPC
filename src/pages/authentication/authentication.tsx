@@ -68,61 +68,47 @@ export default function Authentication() {
 
   return (
     <main className="flex min-h-screen bg-gray-50">
-      {/* Mobile menu button */}
-      <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
-        <Menu size={24} />
-      </button>
-
       {/* Sidebar with responsive visibility */}
-      <div className={`
-        fixed inset-y-0 left-0 transform lg:relative lg:translate-x-0 transition duration-200 ease-in-out z-40
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:block
-      `}>
-        <Sidebar>
-          <SidebarItem 
-            icon={<House size={20} />} 
-            text="Home" 
-            alert={false} 
-            active={false}
-            to="/home"
-          />
-          <SidebarItem 
-            icon={<TabletSmartphone size={20} />} 
-            text="Devices" 
-            alert={false} 
-            active={false}
-            to="/devices"
-          />
-          <SidebarItem 
-            icon={<Bell size={20} />} 
-            text="Notification" 
-            alert={false} 
-            active={false}
-            to="/notifications"
-          />
-          <SidebarItem 
-            icon={<Settings size={20} />} 
-            text="Settings" 
-            alert={false} 
-            active={false}
-            to="/settings"
-          />
-          <SidebarItem 
-            icon={<ShieldCheck size={20} />} 
-            text="Authenticate" 
-            alert={false} 
-            active={true}
-            to="/auth"
-          />
-        </Sidebar>
-      </div>
+      <Sidebar>
+        <SidebarItem 
+          icon={<House size={20} />} 
+          text="Home" 
+          alert={false} 
+          active={false}
+          to="/home"
+        />
+        <SidebarItem 
+          icon={<TabletSmartphone size={20} />} 
+          text="Devices" 
+          alert={false} 
+          active={false}
+          to="/devices"
+        />
+        <SidebarItem 
+          icon={<Bell size={20} />} 
+          text="Notification" 
+          alert={false} 
+          active={false}
+          to="/notifications"
+        />
+        <SidebarItem 
+          icon={<Settings size={20} />} 
+          text="Settings" 
+          alert={false} 
+          active={false}
+          to="/settings"
+        />
+        <SidebarItem 
+          icon={<ShieldCheck size={20} />} 
+          text="Authenticate" 
+          alert={false} 
+          active={true}
+          to="/auth"
+        />
+      </Sidebar>
 
       {/* Main content */}
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 ml-0 lg:ml-0">
+      <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
         <h1 className="text-2xl font-bold mb-6">Authentication</h1>
         <Card className="w-full">
           <CardContent className="p-0">

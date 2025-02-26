@@ -103,12 +103,7 @@ const filteredGroups: { [key: string]: Notification[] } = Object.entries(grouped
       </button>
 
       {/* Sidebar with responsive visibility */}
-      <div className={`
-        fixed inset-y-0 left-0 transform lg:relative lg:translate-x-0 transition duration-200 ease-in-out z-40
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:block
-      `}>
-        <Sidebar>
+      <Sidebar>
         <SidebarItem 
           icon={<House size={20} />} 
           text="Home" 
@@ -145,10 +140,9 @@ const filteredGroups: { [key: string]: Notification[] } = Object.entries(grouped
           to="/auth"
         />
       </Sidebar>
-      </div>
 
       {/* Main content */}
-      <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 ml-0 lg:ml-0">
+      <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
         <h1 className="text-2xl font-bold mb-6">Notifications</h1>
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">

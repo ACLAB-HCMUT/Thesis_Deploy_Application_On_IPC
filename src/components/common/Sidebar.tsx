@@ -2,11 +2,7 @@ import React, { createContext, useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react'
 import Header from "../../components/common/Header.tsx";
-const Logo = require("../../assets/image/logo.png")
-
 const SidebarContext = createContext({ isExpanded: true })
-
-import React, { createContext, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 const Logo = require("../../assets/image/logo.png")
 
@@ -120,7 +116,5 @@ export function SidebarItem({ icon, text, active, alert, to}) {
             </div>
         )}
         </li>
-    </Link>
-    
     )
 }

@@ -31,7 +31,7 @@
 //     createWindow();
 //   }
 // });
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { session } = require('electron');
 
@@ -103,4 +103,3 @@ function showNotification(title, body) {
   ipcMain.on('send-notification', (event, { title, body }) => {
     showNotification(title, body);
   });
-

@@ -62,6 +62,7 @@ const Devices: React.FC = () => {
       </Sidebar>
 
       <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
+        <h1 className="text-2xl font-bold mb-6">Devices</h1>
         {/* Device cards */}
         <div className="grid grid:cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           <DeviceCard 
