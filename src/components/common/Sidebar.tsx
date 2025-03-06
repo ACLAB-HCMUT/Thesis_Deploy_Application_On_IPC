@@ -8,7 +8,20 @@ const Logo = require("../../assets/image/logo.png")
 
 export default function Sidebar({ children }) {
     const [isExpanded, setIsExpanded] = useState(false)
+    const [showProfileMenu, setShowProfileMenu] = useState(false); // Thêm state cho menu
+    const navigate = useNavigate();
     const toggleSidebar = () => setIsExpanded((isExpanded) => !isExpanded)
+    const handleLogout = () => {
+        // Xóa access token, refresh token và persist root
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('persist:root');
+
+        localStorage.removeItem('')
+        // Điều hướng về trang login
+        navigate('/login');
+        setShowProfileMenu(false);
+    };
     return (
         <div>
             <Header toggleSidebar={toggleSidebar}></Header>
@@ -34,18 +47,19 @@ export default function Sidebar({ children }) {
                     <ul className="flex-1 px-3">{children}</ul>
                     </SidebarContext.Provider>
 
-                    <Link to="/profile">
-                        <div className="border-t flex p-3">
+                    {/* Profile section với dropdown */}
+                    <div className="border-t flex p-3 relative">
+                        <div 
+                            className="flex items-center cursor-pointer"
+                            onClick={() => setShowProfileMenu(!showProfileMenu)}
+                        >
                             <img
                                 src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
                                 alt=""
                                 className="w-10 h-10 rounded-md"
                             />
                             <div
-                                className={`
-                                flex justify-between items-center
-                                overflow-hidden transition-all ${isExpanded ? "w-52 ml-3" : "w-0"}
-                            `}
+                                className={`flex justify-between items-center overflow-hidden transition-all ${isExpanded ? "w-52 ml-3" : "w-0"}`}
                             >
                                 <div className="leading-4">
                                     <h4 className="font-semibold">John Doe</h4>
@@ -54,7 +68,26 @@ export default function Sidebar({ children }) {
                                 <MoreVertical size={20} />
                             </div>
                         </div>
-                    </Link>
+
+                        {/* Dropdown menu */}
+                        {showProfileMenu && (
+                            <div className="absolute bottom-full left-0 mb-2 w-48 bg-white rounded-md shadow-lg border border-gray-100">
+                                <Link 
+                                    to="/profile" 
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => setShowProfileMenu(false)}
+                                >
+                                    Profile
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </nav>
             </aside>
         </div>

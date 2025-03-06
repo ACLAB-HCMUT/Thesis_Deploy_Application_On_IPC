@@ -13,6 +13,8 @@
   interface RootState {
     user: {
       currentUser: null | any;
+      acccesToken: string | null;
+      refreshToken: string | null;
       loading: boolean;
       error: string | null;
     }
@@ -31,6 +33,42 @@
       setFormData({...formData, [e.target.id]: e.target.value.trim()});
 
     }
+    
+    // Hàm lưu tokens vào localStorage
+    const storeTokens = (accessToken, refreshToken) => {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+  };
+  // Hàm refresh token
+  const refreshToken = async () => {
+    try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const res = await fetch("http://localhost:8001/api/auth/refresh-token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ refreshToken }),
+        });
+
+        const data = await res.json();
+        if (res.status === 200 && data.success) {
+            storeTokens(data.accessToken, data.refreshToken);
+            dispatch(signInSuccess({
+                user: data.user,
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken
+            }));
+            return data.accessToken;
+        } else {
+            throw new Error("Refresh token failed");
+        }
+    } catch (error) {
+        dispatch(signInFailure("Session expired. Please login again."));
+        navigate("/login");
+        throw error;
+    }
+};
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -56,7 +94,13 @@
        
         const data = await res.json();
         if (res.status === 200 && data.success) {
-          dispatch(signInSuccess(data));
+          // Giả sử server trả về accessToken, refreshToken và user
+          storeTokens(data.accessToken, data.refreshToken);
+          dispatch(signInSuccess({
+            user: data.user,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken
+          }));
           navigate("/home");
         } else {
           dispatch(signInFailure(data.message));
@@ -68,7 +112,7 @@
       }
       
     }
-    console.log(formData);
+    // console.log(formData);
     return (
       <div className="font-[sans-serif]">
         <div className="flex flex-col items-center justify-center w-full h-screen">

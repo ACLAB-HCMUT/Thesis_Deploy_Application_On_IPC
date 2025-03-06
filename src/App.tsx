@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation, createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import Navbar from './pages/Welcome/components/navbar.tsx';
 import HeroSection from './pages/Welcome/components/HeroSection.tsx';
 import Login from './pages/Login/Login.tsx';
@@ -13,6 +13,7 @@ import Auth from './pages/authentication/authentication.tsx';
 import Profile from './pages/Profile/Profile.tsx';
 import './app.css';
 
+
 function App() {
   return (
     <div className="relative w-full h-screen welcome">
@@ -24,18 +25,51 @@ function App() {
     </div>
   );
 }
+const ProtectedRoute = ({children}) => {
+  const isAuthenticated = !!localStorage.getItem('accessToken');
 
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 const router = createBrowserRouter(
   [
     { path: "/", element: <App /> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
-    { path: "/home", element: <Home /> },
-    { path: "/devices", element: <Devices /> },
-    {path: "/notifications", element: <NotificationPage />},
-    {path: "/settings", element: <Setting />},
-    {path: "/auth", element: <Auth />},
-    {path: "/profile", element: <Profile />},
+
+
+    { path: "/home", element:( <ProtectedRoute>
+      <Home />
+    </ProtectedRoute> )},
+    { path: "/devices",
+      element: (
+        <ProtectedRoute>
+          <Devices />
+        </ProtectedRoute>
+      ),},
+    {path: "/notifications",
+      element: (
+        <ProtectedRoute>
+          <NotificationPage />
+        </ProtectedRoute>
+      ),},
+    {path: "/settings",
+      element: (
+        <ProtectedRoute>
+          <Setting />
+        </ProtectedRoute>
+      ),},
+    {path: "/auth",
+      element: (
+        <ProtectedRoute>
+          <Auth />
+        </ProtectedRoute>
+      ),},
+    {path: "/profile",
+      element: (
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      ),},
   ],
   {
     future: {

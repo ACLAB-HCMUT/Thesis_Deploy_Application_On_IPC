@@ -16,6 +16,8 @@ const userSlice = createSlice({
         },
         signInSuccess: (state, action) => {
             state.currentUser = action.payload;
+            state.accessToken = action.payload.accessToken;
+            state.refreshToken = action.payload.refreshToken;
             state.loading = false;
             state.error = null;
         },
@@ -24,10 +26,17 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+        logout: (state) => {
+            state.currentUser = null;
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.loading = false;
+            state.error = null;
+        },
     },
 });
 
 
-export  const { signInStart, signInSuccess, signInFailure } = userSlice.actions;
+export  const { signInStart, signInSuccess, signInFailure, logout } = userSlice.actions;
 
 export default userSlice.reducer;
