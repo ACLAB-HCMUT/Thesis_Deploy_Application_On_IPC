@@ -16,8 +16,8 @@ const userSlice = createSlice({
         },
         signInSuccess: (state, action) => {
             state.currentUser = action.payload;
-            state.accessToken = action.payload.accessToken;
-            state.refreshToken = action.payload.refreshToken;
+            state.access_token = action.payload.access_token;
+            state.refresh_token = action.payload.refresh_token;
             state.loading = false;
             state.error = null;
         },
@@ -28,8 +28,8 @@ const userSlice = createSlice({
         },
         logout: (state) => {
             state.currentUser = null;
-            state.accessToken = null;
-            state.refreshToken = null;
+            state.access_token = null;
+            state.refresh_token = null;
             state.loading = false;
             state.error = null;
         },
