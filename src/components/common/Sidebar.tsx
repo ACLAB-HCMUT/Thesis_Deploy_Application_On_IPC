@@ -76,7 +76,7 @@ export default function Sidebar({ children }) {
                         <ul className="flex-1 px-3">
                             {React.Children.map(children, (child) =>
                                 React.cloneElement(child, {
-                                    active: child.props.to === location.pathname, 
+                                    active: child.props.to === location.pathname, // Kiểm tra xem đường dẫn có khớp không
                                 })
                             )}
                         </ul>
