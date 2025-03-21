@@ -11,6 +11,7 @@ import NotificationPage from './pages/Notification/notification.tsx';
 import Setting from './pages/Setting/Settings.tsx';
 import Auth from './pages/authentication/authentication.tsx';
 import Profile from './pages/Profile/Profile.tsx';
+import Layout from  './Layout.tsx';
 import './app.css';
 
 
@@ -26,55 +27,32 @@ function App() {
   );
 }
 const ProtectedRoute = ({children}) => {
-  const isAuthenticated = !!localStorage.getItem('accessToken');
+  const isAuthenticated = !!localStorage.getItem('access_token');
 
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 const router = createBrowserRouter(
   [
-    { path: "/", element: <App /> },
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
-
-
-    { path: "/home", element:( <ProtectedRoute>
-      <Home />
-    </ProtectedRoute> )},
-    { path: "/devices",
-      element: (
-        <ProtectedRoute>
-          <Devices />
-        </ProtectedRoute>
-      ),},
-    {path: "/notifications",
-      element: (
-        <ProtectedRoute>
-          <NotificationPage />
-        </ProtectedRoute>
-      ),},
-    {path: "/settings",
-      element: (
-        <ProtectedRoute>
-          <Setting />
-        </ProtectedRoute>
-      ),},
-    {path: "/auth",
-      element: (
-        <ProtectedRoute>
-          <Auth />
-        </ProtectedRoute>
-      ),},
-    {path: "/profile",
-      element: (
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      ),},
+      { path: "/", element: <App /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      {
+          path: "/",
+          element: <ProtectedRoute><Layout /></ProtectedRoute>, // Layout chứa Sidebar
+          children: [
+              { path: "home", element: <Home /> },
+              { path: "devices", element: <Devices /> },
+              { path: "notifications", element: <NotificationPage /> },
+              { path: "settings", element: <Setting /> },
+              { path: "auth", element: <Auth /> },
+              { path: "profile", element: <Profile /> },
+          ],
+      },
   ],
   {
-    future: {
-      v7_relativeSplatPath: true, // ✅ Bật flag v7 để tránh cảnh báo
-    },
+      future: {
+          v7_relativeSplatPath: true,
+      },
   }
 );
 

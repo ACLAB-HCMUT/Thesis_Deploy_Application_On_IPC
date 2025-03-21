@@ -8,20 +8,21 @@ import { Spinner, Alert } from "flowbite-react";
 import { signInStart, signInSuccess, signInFailure } from "../../redux/user/userSlice";
 
 import { useDispatch, useSelector } from "react-redux";
+import { Phone } from "lucide-react";
 
 
 interface RootState {
   user: {
     currentUser: null | any;
-    acccesToken: string | null;
-    refreshToken: string | null;
+    access_token: string | null;
+    refresh_token: string | null;
     loading: boolean;
     error: string | null;
   }
 }
 export default function Login() {
   const [formData, setFormData] = useState({
-      email_username: "",
+      email_phone: "",
       password: "",
   
   });
@@ -35,31 +36,42 @@ export default function Login() {
   }
   
   // Hàm lưu tokens vào localStorage
-  const storeTokens = (accessToken, refreshToken) => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+  const storeTokens = (access_token, refresh_token, email ) => {
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
+    localStorage.setItem('userEmail', email);
+    
 };
 // Hàm refresh token
-const refreshToken = async () => {
+const refresh_token = async () => {
   try {
-      const refreshToken = localStorage.getItem('refreshToken');
-      const res = await fetch("http://localhost:8001/api/auth/refresh-token", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-      });
+      const refresh_token = localStorage.getItem('refresh_token');
+      // const res = await fetch("http://localhost:8001/api/auth/refresh-token", {
+      //     method: "POST",
+      //     headers: {
+      //         "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ refreshToken }),
+      // });
+      // const res = await fetch("https://do-an-da-nganh.onrender.com/api/users/refresh-token", {
+        const res = await fetch("http://192.168.1.12:8000/api/users/refresh-token", {  
+      method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh_token }),
+
+    });
 
       const data = await res.json();
-      if (res.status === 200 && data.success) {
-          storeTokens(data.accessToken, data.refreshToken);
+      if (res.status === 201 && data.success) {
+          storeTokens(data.access_token, data.refresh_token, data.data.email);
           dispatch(signInSuccess({
-              user: data.user,
-              accessToken: data.accessToken,
-              refreshToken: data.refreshToken
+              user: data.data,
+              access_token: data.access_token,
+              refresh_token: data.refresh_token
           }));
-          return data.accessToken;
+          return data.access_token;
       } else {
           throw new Error("Refresh token failed");
       }
@@ -70,48 +82,53 @@ const refreshToken = async () => {
   }
 };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.email_username || !formData.password) {
-       return dispatch(signInFailure("All fields are required!"));
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("1. Form submitted:", formData);
 
-    try {
-      dispatch(signInStart());
-      const isEmail = formData.email_username.includes("@");
-      const requestBody = {
-        email: isEmail ? formData.email_username : undefined,
-        username: !isEmail ? formData.email_username : undefined,
-        password: formData.password,
-      };
-      const res = await fetch("http://localhost:8001/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-     
-      const data = await res.json();
-      if (res.status === 200 && data.success) {
-        // Giả sử server trả về accessToken, refreshToken và user
-        storeTokens(data.accessToken, data.refreshToken);
-        dispatch(signInSuccess({
-          user: data.user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken
-        }));
-        navigate("/home");
-      } else {
-        dispatch(signInFailure(data.message));
-        
-      }
-    } catch (error){
-      dispatch(signInFailure(error.message));
-      
-    }
-    
+  if (!formData.email_phone || !formData.password) {
+    console.log("2. Missing fields, dispatching failure");
+    return dispatch(signInFailure("All fields are required!"));
   }
+
+  try {
+    console.log("3. Starting sign-in process");
+    dispatch(signInStart());
+    const requestBody = { email: formData.email_phone, password: formData.password };
+    console.log("4. Request body:", requestBody);
+
+    const res = await fetch("http://192.168.1.12:8000/api/users/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    });
+    console.log("5. Fetch completed, status:", res.status);
+
+    const data = await res.json();
+    console.log("6. Response data:", data);
+
+    if ((res.status === 200 || res.status === 201) && data.success) {
+      console.log("7. Sign-in successful");
+      const email = data.data.email;
+      storeTokens(data.access_token, data.refresh_token, email);
+      dispatch(signInSuccess({ 
+        user: data.data, 
+        access_token: data.access_token, 
+        refresh_token: data.refresh_token 
+      }));
+      navigate("/home");
+    } else {
+      console.log("8. Sign-in failed with message:", data.message);
+      dispatch(signInFailure(data.message || "Login failed"));
+    }
+  } catch (error) {
+    console.log("9. Error caught:", error.message);
+    dispatch(signInFailure(error.message || "Something went wrong"));
+  } finally {
+    // Đảm bảo loading luôn được tắt nếu cần
+    // dispatch(signInFailure(null)); // Có thể cần thêm logic để reset loading
+  }
+};
   // console.log(formData);
   return (
     <div className="font-[sans-serif]">
@@ -143,16 +160,16 @@ const refreshToken = async () => {
                         </g>
                       </svg>
                     </div> */}
-                    <label className="text-gray-800 text-xs block mb-2">Email hoặc Username</label>
+                    <label className="text-gray-800 text-xs block mb-2">Email hoặc Phone</label>
                     <div className="relative flex items-center">
                       <input 
-                          name="email_username" 
+                          name="email_phone" 
                           type="text" 
-                          id="email_username"  
+                          id="email_phone"  
                           required 
                           onChange={handleChange} 
                           className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" 
-                          placeholder="Nhập email hoặc username" />
+                          placeholder="Nhập email hoặc Phone" />
                     </div>
                   </div>
 
@@ -182,19 +199,20 @@ const refreshToken = async () => {
 
                   <div className="mt-8">
                     {/* <Link to="/home"> */}
-                      <button type="submit" 
-                      disabled={loading}
-
-                      className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none">
-                        {loading ? (
-                          <>
-                            <Spinner size="sm" />
-                            <span className="pl-3">Loading...</span>
-                          </>
-                        ) : (
-                          "Login"
-                        )}
-                      </button>
+                    <button 
+  type="submit" 
+  disabled={loading}
+  className="w-full shadow-xl py-1 px-4 text-sm tracking-wide rounded-md text-white bg-green-700 hover:bg-green-800 focus:outline-none"
+>
+  {loading ? (
+    <>
+      <Spinner size="sm" />
+      <span className="pl-3">Loading...</span>
+    </>
+  ) : (
+    "Login"
+  )}
+</button>
                     {/* </Link> */}
                     {errorMessage && (<Alert className="mt5 text-red-500" >{errorMessage}</Alert>)} 
                   </div>

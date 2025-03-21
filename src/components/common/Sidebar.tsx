@@ -1,47 +1,81 @@
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react'
 import Header from "../../components/common/Header.tsx";
+import axios from "axios";
 const SidebarContext = createContext({ isExpanded: true })
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom";
+
+const getInitials = (firstName, lastName) => {
+    const firstInitial = firstName?.charAt(0)?.toUpperCase() || '';
+    const lastInitial = lastName?.charAt(0)?.toUpperCase() || '';
+    return `${firstInitial}${lastInitial}`;
+};
+
 const Logo = require("../../assets/image/logo.png")
 
 export default function Sidebar({ children }) {
+    const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false)
+    const [userData, setUserData] = useState({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        phone   : "",
+        address: "",
+    });
     const [showProfileMenu, setShowProfileMenu] = useState(false); // Thêm state cho menu
     const navigate = useNavigate();
-    const toggleSidebar = () => setIsExpanded((isExpanded) => !isExpanded)
-    const handleLogout = () => {
-        // Xóa access token, refresh token và persist root
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('persist:root');
+    const location = useLocation(); // Lấy thông tin URL hiện tại
+    
 
-        localStorage.removeItem('')
+    useEffect(() => {
+        const fetchUserData = async () => {
+            setIsLoading(true);
+            try {
+                // const response = await axios.get("http://localhost:8001/api/auth/user-data", {
+                const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {     
+                headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                });
+                console.log("API Response:", response.data); // Debug response
+                if (response.data.status == 201) {
+                    setUserData(response.data.data);
+                    
+                } else {
+                    setMessage("Không thể tải thông tin người dùng.");
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy thông tin user:", error);
+                setMessage(error.response?.data?.message || "Đã xảy ra lỗi khi tải thông tin.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchUserData();
+    }, []);
+    const handleLogout = () => {
+        // Xóa access token, refresh token, email và persist root
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('persist:root');
         // Điều hướng về trang login
         navigate('/login');
         setShowProfileMenu(false);
     };
+    const userInitials = getInitials(userData.firstName, userData.lastName);
+    console.log(userData);
+    const toggleSidebar = () => setIsExpanded((isExpanded) => !isExpanded)
     return (
         <div>
             <Header toggleSidebar={toggleSidebar}></Header>
             <aside className="h-screen">
                 <nav className={`fixed top-0 left-0 z-40 pt-20 h-full flex flex-col bg-white border-r shadow-sm lg:translate-x-0 transition-transform ${isExpanded ? "translate-x-0" : "-translate-x-full"}`}>
-                    {/* <div className="p-4 pb-2 flex justify-between items-center">
-                        <img
-                            src="https://img.logoipsum.com/243.svg"
-                            className={`overflow-hidden transition-all ${
-                            expanded ? "w-32" : "w-0"
-                            }`}
-                            alt=""
-                        />
-                        <button
-                            onClick={() => setExpanded((curr) => !curr)}
-                            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-                        >
-                            {expanded ? <ChevronFirst /> : <ChevronLast />}
-                        </button>
-                    </div> */}
+                    
 
                     <SidebarContext.Provider value={{ isExpanded }}>
                     <ul className="flex-1 px-3">{children}</ul>
@@ -51,19 +85,25 @@ export default function Sidebar({ children }) {
                     <div className="border-t flex p-3 relative">
                         <div 
                             className="flex items-center cursor-pointer"
-                            onClick={() => setShowProfileMenu(!showProfileMenu)}
-                        >
-                            <img
+                            onClick={() => setShowProfileMenu(!showProfileMenu)}>
+                        {/* Hiển thị chữ cái đầu thay vì avatar */}
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border border-gray-300">
+                        <span className="text-lg font-semibold text-indigo-800">
+    {userInitials || "U"} {/* Nếu không có dữ liệu thì hiển thị "U" */}
+</span>
+                            </div>
+                            
+                            {/* <img
                                 src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
                                 alt=""
                                 className="w-10 h-10 rounded-md"
-                            />
+                            /> */}
                             <div
                                 className={`flex justify-between items-center overflow-hidden transition-all ${isExpanded ? "w-52 ml-3" : "w-0"}`}
                             >
                                 <div className="leading-4">
-                                    <h4 className="font-semibold">John Doe</h4>
-                                    <span className="text-xs text-gray-600">johndoe@gmail.com</span>
+                                    <h4 className="font-semibold">{userData.firstName} {userData.lastName}</h4>
+                                    <span className="text-xs text-gray-600">{userData.email}</span>
                                 </div>
                                 <MoreVertical size={20} />
                             </div>

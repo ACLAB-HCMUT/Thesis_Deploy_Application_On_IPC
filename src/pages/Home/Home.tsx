@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
+// import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer  } from 'recharts';
 import { 
   House,
@@ -111,44 +111,6 @@ export default function Home() {
 
   return (    
     <main className="flex min-h-screen bg-gray-50">
-      {/* Sidebar with responsive visibility */}
-      <Sidebar>
-        <SidebarItem 
-          icon={<House size={20} />} 
-          text="Home" 
-          alert={false} 
-          active={location.pathname === '/home'}
-          to="/home"
-        />
-        <SidebarItem 
-          icon={<TabletSmartphone size={20} />} 
-          text="Devices" 
-          alert={false} 
-          active={location.pathname === '/devices'}
-          to="/devices"
-        />
-        <SidebarItem 
-          icon={<Bell size={20} />} 
-          text="Notification" 
-          alert={false} 
-          active={location.pathname === '/notifications'}
-          to="/notifications"
-        />
-        <SidebarItem 
-          icon={<Settings size={20} />} 
-          text="Settings" 
-          alert={false} 
-          active={location.pathname === '/settings'}
-          to="/settings"
-        />
-        <SidebarItem 
-          icon={<ShieldCheck size={20} />} 
-          text="Authenticate" 
-          alert={false} 
-          active={location.pathname === '/auth'}
-          to="/auth"
-        />
-      </Sidebar>
 
       {/* Main content */}
       <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">

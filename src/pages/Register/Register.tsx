@@ -12,7 +12,7 @@ export default function Register() {
     username: "",
     password: "",
     email: "",
-    phoneNumber: "",
+    phone: "",
     address: "",});
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function Register() {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!formData.username || !formData.email || !formData.password )
+    if(!formData.phone || !formData.email || !formData.password )
     {return setErrorMessage("All fields are required!");
 
     }
@@ -31,7 +31,7 @@ export default function Register() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const res = await fetch("http://localhost:8001/api/auth/signup", {
+      const res = await fetch("https://do-an-da-nganh.onrender.com/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

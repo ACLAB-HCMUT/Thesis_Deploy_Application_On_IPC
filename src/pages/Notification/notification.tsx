@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Trash2, Bell, Check, Menu, House, TabletSmartphone, ShieldCheck, Settings } from 'lucide-react';
-import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
+// import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
 
 interface Notification {
     id: number;
@@ -103,7 +103,7 @@ const filteredGroups: { [key: string]: Notification[] } = Object.entries(grouped
       </button>
 
       {/* Sidebar with responsive visibility */}
-      <Sidebar>
+      {/* <Sidebar>
         <SidebarItem 
           icon={<House size={20} />} 
           text="Home" 
@@ -139,7 +139,7 @@ const filteredGroups: { [key: string]: Notification[] } = Object.entries(grouped
           active={location.pathname === '/auth'}
           to="/auth"
         />
-      </Sidebar>
+      </Sidebar> */}
 
       {/* Main content */}
       <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">

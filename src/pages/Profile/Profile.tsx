@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
-import { House, TabletSmartphone, Bell, ShieldCheck, Settings, Pencil, Check } from "lucide-react";
+import { House, TabletSmartphone, Bell, ShieldCheck, Settings, Pencil, Check, Phone } from "lucide-react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+// Hàm tạo chữ cái viết tắt
+const getInitials = (firstName, lastName) => {
+    const firstInitial = firstName?.charAt(0)?.toUpperCase() || '';
+    const lastInitial = lastName?.charAt(0)?.toUpperCase() || '';
+    return `${firstInitial}${lastInitial}`;
+};
 
 export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [userData, setUserData] = useState({
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         username: "",
         email: "",
         phone: "",
@@ -17,18 +22,29 @@ export default function Profile() {
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const location = useLocation(); // Lấy thông tin URL hiện tại
-
+    // Thêm state để kiểm tra avatar (nếu bạn có logic kiểm tra avatar)
+    const [hasAvatar, setHasAvatar] = useState(true); // Giả sử mặc định có avatar
+    const userInitials = getInitials(userData.firstName, userData.lastName);
     useEffect(() => {
         const fetchUserData = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get("http://localhost:8001/api/auth/user-data", {
+                // const response = await axios.get("http://localhost:8001/api/auth/user-data", {
+                    // const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {
+                    // headers: {
+                    //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    // },
+                    const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                        email: location.state?.email || '',
                     },
                 });
-                if (response.data.success) {
+                // if (response.data.success) {
+                if (response.data) {
                     setUserData(response.data.data);
+                    setHasAvatar(!!response.data.data.avatar || 
+                        (response.data.firstName && response.data.lastName));
                 } else {
                     setMessage("Không thể tải thông tin người dùng.");
                 }
@@ -44,7 +60,7 @@ export default function Profile() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name !== "email" && name !== "username") {
+        if (name !== "email" && name !== "phone") {
             setUserData((prev) => ({ ...prev, [name]: value }));
         }
     };
@@ -52,17 +68,21 @@ export default function Profile() {
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.put("http://localhost:8001/api/auth/updateProfile", {
-                firstName: userData.firstname,
-                lastName: userData.lastname,
-                phoneNumber: userData.phone,
+           
+            //  const response = await axios.put("http://localhost:8001/api/auth/updateProfile", {
+                const response = await axios.put("https://do-an-da-nganh.onrender.com/api/users/updateInfo", {    
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                username: userData.username,
                 address: userData.address,
-            }, {
+                email: userData.email,
+                phone: userData.phone
+                }, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 },
             });
-            if (response.data.success) {
+            if (response.data.status == 201) {
                 setMessage("Cập nhật thông tin thành công!");
                 setIsEditing(false);
                 setUserData(response.data.data);
@@ -79,56 +99,27 @@ export default function Profile() {
 
     return (
         <main className="flex min-h-screen bg-gray-50">
-            <Sidebar>
-                <SidebarItem
-                    icon={<House size={20} />}
-                    text="Home"
-                    to="/home"
-                    active={location.pathname === "/home"}
-                    alert={false}
-                />
-                <SidebarItem
-                    icon={<TabletSmartphone size={20} />}
-                    text="Devices"
-                    to="/devices"
-                    active={location.pathname === "/devices"}
-                    alert={false}
-                />
-                <SidebarItem
-                    icon={<Bell size={20} />}
-                    text="Notification"
-                    to="/notifications"
-                    active={location.pathname === "/notifications"}
-                    alert={false}
-                />
-                <SidebarItem
-                    icon={<Settings size={20} />}
-                    text="Settings"
-                    to="/settings"
-                    active={location.pathname === "/settings"}
-                    alert={false}
-                />
-                <SidebarItem
-                    icon={<ShieldCheck size={20} />}
-                    text="Authenticate"
-                    to="/auth"
-                    active={location.pathname === "/auth"}
-                    alert={false}
-                />
-            </Sidebar>
             <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
                 <h1 className="text-2xl font-bold mb-6">Profile</h1>
                 {/* Phần còn lại của code giữ nguyên */}
                 <div className="flex flex-row justify-between items-center">
                     <div className="flex items-center space-x-4 p-4">
-                        <img
-                            src={`https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true&name=${userData.firstname}+${userData.lastname}`}
-                            alt="User Avatar"
-                            className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
-                        />
+                    {hasAvatar ? (
+                            <img
+                                src={`https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true&name=${userData.firstName}+${userData.lastName}`}
+                                alt="User Avatar"
+                                className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
+                            />
+                        ) : (
+                            <div className="w-16 h-16 rounded-full bg-indigo-100 border-2 border-gray-300 flex items-center justify-center">
+                                <span className="text-2xl font-bold text-indigo-800">
+                                    {userInitials}
+                                </span>
+                            </div>
+                        )}
                         <div>
                             <h2 className="text-xl font-semibold text-gray-900">
-                                {userData.firstname} {userData.lastname}
+                                {userData.firstName} {userData.lastName}
                             </h2>
                             <p className="text-gray-500">{userData.email}</p>
                         </div>
@@ -159,8 +150,8 @@ export default function Profile() {
                             <label className="block font-medium mb-2">First Name</label>
                             <input
                                 type="text"
-                                value={userData.firstname || ""}
-                                name="firstname"
+                                value={userData.firstName || ""}
+                                name="firstName"
                                 onChange={handleChange}
                                 readOnly={!isEditing}
                                 disabled={!isEditing}
@@ -171,8 +162,8 @@ export default function Profile() {
                             <label className="block font-medium mb-2">Last Name</label>
                             <input
                                 type="text"
-                                value={userData.lastname || ""}
-                                name="lastname"
+                                value={userData.lastName || ""}
+                                name="lastName"
                                 onChange={handleChange}
                                 readOnly={!isEditing}
                                 disabled={!isEditing}
@@ -185,9 +176,10 @@ export default function Profile() {
                                 type="text"
                                 value={userData.username || ""}
                                 name="username"
-                                readOnly
-                                disabled
-                                className="w-full px-3 py-2 border rounded-lg bg-gray-100 cursor-default"
+                                onChange={handleChange}
+                                readOnly={!isEditing}
+                                disabled={!isEditing}
+                                className={`w-full px-3 py-2 border rounded-lg ${isEditing ? "bg-white" : "bg-gray-100 cursor-default"}`}
                             />
                         </div>
                         <div className="mb-4">
@@ -208,9 +200,10 @@ export default function Profile() {
                                 value={userData.phone || ""}
                                 name="phone"
                                 onChange={handleChange}
-                                readOnly={!isEditing}
-                                disabled={!isEditing}
-                                className={`w-full px-3 py-2 border rounded-lg ${isEditing ? "bg-white" : "bg-gray-100 cursor-default"}`}
+                                readOnly
+                                disabled
+                                className="w-full px-3 py-2 border rounded-lg bg-gray-100 cursor-default"
+                                
                             />
                         </div>
                         <div className="mb-4">
