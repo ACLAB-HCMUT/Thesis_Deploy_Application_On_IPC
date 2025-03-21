@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Trash2, Bell, Check, Menu, House, TabletSmartphone, ShieldCheck, Settings } from 'lucide-react';
-// import Sidebar, { SidebarItem } from "../../components/common/Sidebar.tsx";
+
 
 interface Notification {
     id: number;
@@ -101,45 +101,6 @@ const filteredGroups: { [key: string]: Notification[] } = Object.entries(grouped
       >
         <Menu size={24} />
       </button>
-
-      {/* Sidebar with responsive visibility */}
-      {/* <Sidebar>
-        <SidebarItem 
-          icon={<House size={20} />} 
-          text="Home" 
-          alert={false} 
-          active={location.pathname === '/home'}
-          to="/home"
-        />
-        <SidebarItem 
-          icon={<TabletSmartphone size={20} />} 
-          text="Devices" 
-          alert={false} 
-          active={location.pathname === '/devices'}
-          to="/devices"
-        />
-        <SidebarItem 
-          icon={<Bell size={20} />} 
-          text="Notification" 
-          alert={false} 
-          active={location.pathname === '/notifications'}
-          to="/notifications"
-        />
-        <SidebarItem 
-          icon={<Settings size={20} />} 
-          text="Settings" 
-          alert={false} 
-          active={location.pathname === '/settings'}
-          to="/settings"
-        />
-        <SidebarItem 
-          icon={<ShieldCheck size={20} />} 
-          text="Authenticate" 
-          alert={false} 
-          active={location.pathname === '/auth'}
-          to="/auth"
-        />
-      </Sidebar> */}
 
       {/* Main content */}
       <div className="flex-1 mt-16 p-4 space-y-6 sm:space-y-8 ml-0 lg:ml-16">
