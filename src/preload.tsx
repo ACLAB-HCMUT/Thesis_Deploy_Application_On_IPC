@@ -1,4 +1,4 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 const os = require('os');
 
 function getLocalIP() {
@@ -17,3 +17,4 @@ function getLocalIP() {
 contextBridge.exposeInMainWorld('electronAPI', {
   getLocalIP: () => getLocalIP()
 });
+
