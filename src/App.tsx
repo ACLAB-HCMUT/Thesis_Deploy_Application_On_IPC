@@ -12,6 +12,7 @@ import Setting from './pages/Setting/Settings.tsx';
 import Auth from './pages/authentication/authentication.tsx';
 import Profile from './pages/Profile/Profile.tsx';
 import Layout from  './Layout.tsx';
+import ErrorPage from './ErrorPage.tsx'; // Tạo một component ErrorPage
 import './app.css';
 
 
@@ -33,7 +34,9 @@ const ProtectedRoute = ({children}) => {
 }
 const router = createBrowserRouter(
   [
-      { path: "/", element: <App /> },
+      { path: "/", element: <App />,
+        errorElement: <ErrorPage />, // Hiển thị trang lỗi tùy chỉnh
+       },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       {

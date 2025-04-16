@@ -30,11 +30,11 @@ export default function Profile() {
             setIsLoading(true);
             try {
                 // const response = await axios.get("http://localhost:8001/api/auth/user-data", {
-                    // const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {
+                    // const response = await axios.get("http://localhost:8000/api/users/info", {
                     // headers: {
                     //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     // },
-                    const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {
+                    const response = await axios.get("http://localhost:8000/api/users/info", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                         email: location.state?.email || '',
@@ -70,7 +70,7 @@ export default function Profile() {
         try {
            
             //  const response = await axios.put("http://localhost:8001/api/auth/updateProfile", {
-                const response = await axios.put("https://do-an-da-nganh.onrender.com/api/users/updateInfo", {    
+                const response = await axios.put("http://localhost:8000/api/users/updateInfo", {    
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 username: userData.username,

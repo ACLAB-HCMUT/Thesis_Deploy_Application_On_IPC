@@ -18,10 +18,10 @@ import Header from "../../components/common/Header.tsx";
 import axios from 'axios';
 import { app_id, city_id } from '../../config/env.tsx';
 
-const API_URL = "https://do-an-da-nganh.onrender.com/api/sensors/latest/vinhnguyenkhac20@gmail.com";
+const API_URL = "http://localhost:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com";
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?id=${city_id}&appid=${app_id}&units=metric`; 
 const HOURLY_FORECAST = `https://pro.openweathermap.org/data/2.5/forecast?id=${city_id}&appid=${app_id}&units=metric`;
-const CHART_MONTH = "https://do-an-da-nganh.onrender.com/api/sensors/all/month/vinhnguyenkhac20@gmail.com";
+const CHART_MONTH = "http://localhost:8000/api/sensors/all/month/vinhnguyenkhac20@gmail.com";
 
 const powerData = [
   { month: 'Ja', value: 25 },
@@ -32,8 +32,20 @@ const powerData = [
   { month: 'Jun', value: 55 },
   { month: 'Jul', value: 73 }
 ];
+// Định nghĩa kiểu dữ liệu cho Forecast
+interface ForecastItem {
+  dt: number;
+  main: {
+    temp_min: number;
+    temp_max: number;
+  };
+  weather: {
+    main: string;
+    icon: string;
+  }[];
+}
 
-const WeatherCard = ({ title, value, unit, icon: Icon }) => (
+const WeatherCard = ({ title, value, unit, icon: Icon }: { title: string; value: number; unit: string; icon: any })  => (
   <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-3 sm:p-6 shadow-lg border border-gray-100">
     <div className="flex items-center gap-2 sm:gap-3">
       <div className="p-2 sm:p-3 bg-blue-50 rounded-lg">
@@ -47,7 +59,7 @@ const WeatherCard = ({ title, value, unit, icon: Icon }) => (
   </div>
 );
 
-const PowerChart = ({title, data}) => (
+const PowerChart = ({title, data} : { title: string; data: { month: string; value: number }[] }) => (
   <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
     <CardContent className="p-3 sm:p-6">
       <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -93,7 +105,7 @@ const PowerChart = ({title, data}) => (
   </div>
 );
 
-const WeatherForecast = ({ day, icon: Icon, temp, lowTemp }) => (
+const WeatherForecast = ({ day, icon: Icon, temp, lowTemp }: { day: string; icon: any; temp: number; lowTemp: number }) => (
   <div className="flex justify-between items-center py-2 sm:py-3 px-3 sm:px-4 hover:bg-gray-50 rounded-lg transition-colors">
     <span className="text-gray-700 text-sm sm:text-base font-medium">{day}</span>
     <Icon className="text-yellow-500 w-5 h-5 sm:w-6 sm:h-6" />
@@ -103,7 +115,7 @@ const WeatherForecast = ({ day, icon: Icon, temp, lowTemp }) => (
   </div>
 );
 
-const HourlyForecast = ({ time, icon, temp }) => (
+const HourlyForecast = ({ time, icon, temp }: { time: string; icon: string; temp: string | number }) => (
   <div className="bg-gray-900 text-white rounded-xl p-2 sm:p-4 text-center">
     <p className="text-xs sm:text-sm font-medium mb-1 sm:mb-2">{time}</p>
     {/* <Icon className="mx-auto mb-1 sm:mb-2 w-5 h-5 sm:w-7 sm:h-7" /> */}
@@ -118,11 +130,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [weatherData, setWeatherData] = useState<{ name: string; main: { temp: number }; weather: { description: string, icon: string }[] } | null>(null);
-  const [tempChart, setTempChart] = useState<{ month: string; temp: number }[]>([]);
-  const [humidityChart, setHumidityChart] = useState<{ month: string; humidity: number }[]>([]);
-  const [soilTempChart, setSoilTempChart] = useState<{ month: string; soilTemp: number }[]>([]);
-  const [soilHumidityChart, setSoilHumidityChart] = useState<{ month: string; soilHumidity: number }[]>([]);
-  const [forecast, setForecast] = useState<{dt: string; main: {temp_min: number, temp_max: number}; weather: {main: string}[]}>([]);
+  const [tempChart, setTempChart] = useState<{ month: string; value: number }[]>([]);
+  const [humidityChart, setHumidityChart] = useState<{ month: string; value: number }[]>([]);
+  const [soilTempChart, setSoilTempChart] = useState<{ month: string; value: number }[]>([]);
+  const [soilHumidityChart, setSoilHumidityChart] = useState<{ month: string; value: number }[]>([]); 
+  const [forecast, setForecast] = useState<ForecastItem[]>([]);
   // const [tempChart, setTempChart] = useState([]);
   // const [humidityChart, setHumidityChart] = useState([]);
   // const [soilTempChart, setSoilTempChart] = useState([]);
@@ -216,7 +228,7 @@ export default function Home() {
     const weatherForecast = async () => {
       try {
         const response = await axios.get(HOURLY_FORECAST);
-        const dailyData = response.data.list.filter((item, index) => index % 8 === 0); // Lấy dữ liệu mỗi 24h
+        const dailyData = response.data.list.filter((item: any, index: number) => index % 8 === 0); // Lấy dữ liệu mỗi 24h
         setForecast(dailyData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu thời tiết:", error);

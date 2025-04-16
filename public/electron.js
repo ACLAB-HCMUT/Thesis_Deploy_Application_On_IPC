@@ -42,7 +42,6 @@ function createWindow() {
         icon: path.join(__dirname, '../app_icon.ico'),
         webPreferences: {
             contextIsolation: true,
-            nodeIntegration: true,
             enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js') // Recommended for contextIsolation
         },

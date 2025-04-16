@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react';
 import Header from "../../components/common/Header.tsx";
@@ -29,12 +29,12 @@ export default function Sidebar({ children }) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const navigate = useNavigate();
     const location = useLocation(); // Lấy thông tin URL hiện tại
-
+    const sidebarRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const fetchUserData = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get("https://do-an-da-nganh.onrender.com/api/users/info", {
+                const response = await axios.get("http://localhost:8000/api/users/info", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     },
@@ -54,6 +54,26 @@ export default function Sidebar({ children }) {
         };
         fetchUserData();
     }, []);
+    // Thêm sự kiện click toàn cục để thu sidebar khi nhấp ra ngoài
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            // Chỉ áp dụng trên màn hình nhỏ (< 1024px)
+            if ( isExpanded && sidebarRef.current) {
+                // Kiểm tra xem nhấp có nằm ngoài sidebar không
+                if (!sidebarRef.current.contains(event.target as Node)) {
+                    setIsExpanded(false);
+                }
+            }
+        };
+
+        // Gắn sự kiện click lên document
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // Dọn dẹp sự kiện khi component unmount
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isExpanded]);
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
@@ -71,7 +91,8 @@ export default function Sidebar({ children }) {
         <div>
             <Header toggleSidebar={toggleSidebar} />
             <aside className="h-screen">
-                <nav className={`fixed top-0 left-0 z-40 pt-20 h-full flex flex-col bg-white border-r shadow-sm lg:translate-x-0 transition-transform ${isExpanded ? "translate-x-0" : "-translate-x-full"}`}>
+                <nav ref={sidebarRef} // Gắn ref vào sidebar
+                 className={`fixed top-0 left-0 z-40 pt-20 h-full flex flex-col bg-white border-r shadow-sm lg:translate-x-0 transition-transform ${isExpanded ? "translate-x-0" : "-translate-x-full"}`}>
                     <SidebarContext.Provider value={{ isExpanded }}>
                         <ul className="flex-1 px-3">
                             {React.Children.map(children, (child) =>

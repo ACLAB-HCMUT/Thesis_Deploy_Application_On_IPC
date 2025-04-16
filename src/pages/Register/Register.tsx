@@ -31,7 +31,7 @@ export default function Register() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const res = await fetch("https://do-an-da-nganh.onrender.com/api/users/signup", {
+      const res = await fetch("http://localhost:8000/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

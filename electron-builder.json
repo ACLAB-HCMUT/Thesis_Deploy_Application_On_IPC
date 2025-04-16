@@ -1,16 +1,16 @@
 {
-    "appId": "com.example.app",
-    "productName": "MyApp",
-    "files": [
-      "build/**/*",
-      "main/**/*",
-      "public/**/*"
-    ],
-    "directories": {
-      "output": "dist"
-    },
-    "extraResources": [
-      "main/utils/network.js"
-    ]
+  "appId": "com.smart.agriculture",
+  "productName": "Smart Agriculture",
+  "files": [
+    "build/**/*",
+    "public/electron.js"
+  ],
+  "directories": {
+    "buildResources": "assets",
+    "output": "dist"
+  },
+  "win": {
+    "target": ["nsis"],
+    "icon": "public/logo.ico"
   }
-  
+}
