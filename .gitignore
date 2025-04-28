@@ -1,0 +1,9 @@
+myenv/
+__pycache__
+test.http
+Dockerfile
+.dockerignore
+compose.yml
+backend-ktmt.pem
+.env
+templates

@@ -1,0 +1,110 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #333;
+}
+h1, h2, h3 {
+    color: #2c3e50;
+}
+.container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.panel {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input, select, button {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #2980b9;
+}
+button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+.notification {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    background-color: #f8f9fa;
+}
+.notification.prediction {
+    border-left-color: #2ecc71;
+}
+.notification.alert {
+    border-left-color: #e74c3c;
+}
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.notification-time {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+.notification-content {
+    margin-bottom: 10px;
+}
+.notification-details {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+.connection-status {
+    padding: 8px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
+.connection-status.connected {
+    background-color: #d5f5e3;
+    color: #27ae60;
+}
+.connection-status.disconnected {
+    background-color: #fadbd8;
+    color: #c0392b;
+}
+.notification-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}

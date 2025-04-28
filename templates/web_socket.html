@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Simulator - WebSocket Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 120px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .websocket-log {
+            max-height: 600px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .log-entry.prediction {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2196F3;
+        }
+        .log-entry.alert {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        .log-entry pre {
+            margin: 5px 0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .log-entry .timestamp {
+            font-size: 12px;
+            color: #666;
+        }
+        .status {
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .status.connected {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status.disconnected {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .tab-button {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+            transition: background-color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 15px;
+            background-color: white;
+            border-radius: 0 4px 4px 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .message.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .message.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <div class="card">
+                <h1>AI Simulator - WebSocket Test</h1>
+                <div id="connection-status" class="status disconnected">WebSocket: Đang ngắt kết nối</div>
+                <button id="connect-button">Kết nối WebSocket</button>
+                <button id="disconnect-button" style="display:none;">Ngắt kết nối WebSocket</button>
+            </div>
+
+            <div class="card">
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" onclick="openTab(event, 'prediction-tab')">Gửi dự đoán AI</button>
+                        <button class="tab-button" onclick="openTab(event, 'alert-tab')">Gửi cảnh báo AI</button>
+                    </div>
+                    
+                    <div id="prediction-tab" class="tab-content active">
+                        <h2>Gửi yêu cầu dự đoán AI</h2>
+                        <div class="form-group">
+                            <label for="predict-user-id">User ID:</label>
+                            <input type="number" id="predict-user-id" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="predict-device-id">Device ID:</label>
+                            <input type="text" id="predict-device-id" placeholder="device_123">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="predict-message">Thông điệp (tùy chọn):</label>
+                            <input type="text" id="predict-message" placeholder="Dự đoán cho cây trồng">
+                        </div>
+                        <div class="form-group">
+                            <label for="predict-additional-data">Dữ liệu bổ sung (JSON):</label>
+                            <textarea id="predict-additional-data">{
+    "harvest_date": "2025-05-20",
+    "days_remaining": 30,
+    "crop_health": "Tốt",
+    "crop_type": "Lúa"
+}</textarea>
+                        </div>
+                        <div id="predict-response" class="message" style="display: none;"></div>
+                        <button id="send-prediction-btn">Gửi yêu cầu dự đoán</button>
+                    </div>
+                    
+                    <div id="alert-tab" class="tab-content">
+                        <h2>Gửi yêu cầu cảnh báo AI</h2>
+                        <div class="form-group">
+                            <label for="alert-user-id">User ID:</label>
+                            <input type="number" id="alert-user-id" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="alert-device-id">Device ID:</label>
+                            <input type="text" id="alert-device-id" placeholder="device_123">
+                        </div>
+                        <div class="form-group">
+                            <label for="alert-description">Mô tả cảnh báo:</label>
+                            <input type="text" id="alert-description" placeholder="Phát hiện vấn đề với thiết bị">
+                        </div>
+                        <div class="form-group">
+                            <label for="alert-severity">Mức độ nghiêm trọng:</label>
+                            <select id="alert-severity">
+                                <option value="Thấp">Thấp</option>
+                                <option value="Trung bình">Trung bình</option>
+                                <option value="Cao">Cao</option>
+                                <option value="Nghiêm trọng">Nghiêm trọng</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="alert-additional-data">Dữ liệu bổ sung (JSON):</label>
+                            <textarea id="alert-additional-data">{
+    "issue": "Đất quá khô",
+    "recommendation": "Tăng tưới nước"
+}</textarea>
+                        </div>
+                        <div id="alert-response" class="message" style="display: none;"></div>
+                        <button id="send-alert-btn">Gửi yêu cầu cảnh báo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <h2>WebSocket Log</h2>
+                <div class="button-group">
+                    <button id="clear-log-btn">Xóa log</button>
+                    <button id="clear-alerts-btn">Xóa cảnh báo</button>
+                    <button id="clear-predictions-btn">Xóa dự đoán</button>
+                </div>
+                <div id="websocket-log" class="websocket-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let socket = null;
+        const serverUrl = 'localhost:8000'; // Địa chỉ máy chủ FastAPI
+        
+        // Xử lý tab
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            const tabButtons = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        // Kết nối WebSocket
+        document.getElementById('connect-button').addEventListener('click', connectWebSocket);
+        document.getElementById('disconnect-button').addEventListener('click', disconnectWebSocket);
+        
+        function connectWebSocket() {
+            try {
+                if (socket && socket.readyState !== WebSocket.CLOSED) {
+                    addToLog('WebSocket đã được kết nối', 'system');
+                    return;
+                }
+                
+                socket = new WebSocket(`ws://${serverUrl}/ws/relay`);
+                
+                socket.onopen = function(e) {
+                    document.getElementById('connection-status').textContent = 'WebSocket: Đã kết nối';
+                    document.getElementById('connection-status').className = 'status connected';
+                    document.getElementById('connect-button').style.display = 'none';
+                    document.getElementById('disconnect-button').style.display = 'inline-block';
+                    addToLog('Kết nối WebSocket thành công', 'system');
+                };
+                
+                socket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    console.log('Received websocket data:', data);
+                    
+                    if (data.type === 'ai_prediction') {
+                        addToLog(`
+                            <div><strong>AI Prediction</strong> | User: ${data.user_id}</div>
+                            <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                            <div><strong>Message:</strong> ${data.message}</div>
+                            <pre>${JSON.stringify(data.prediction, null, 2)}</pre>
+                        `, 'prediction');
+                    } else if (data.type === 'ai_alert') {
+                        addToLog(`
+                            <div><strong>AI Alert</strong> | User: ${data.user_id} | Device: ${data.device_id}</div>
+                            <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                            <div><strong>Message:</strong> ${data.message}</div>
+                            <pre>${JSON.stringify(data.alert, null, 2)}</pre>
+                        `, 'alert');
+                    } else {
+                        addToLog(`
+                            <div><strong>Unknown Message</strong></div>
+                            <div class="timestamp">${new Date().toLocaleTimeString()}</div>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        `, 'system');
+                    }
+                };
+                
+                socket.onclose = function(event) {
+                    document.getElementById('connection-status').textContent = 'WebSocket: Đã ngắt kết nối';
+                    document.getElementById('connection-status').className = 'status disconnected';
+                    document.getElementById('connect-button').style.display = 'inline-block';
+                    document.getElementById('disconnect-button').style.display = 'none';
+                    addToLog('Kết nối WebSocket đã đóng', 'system');
+                };
+                
+                socket.onerror = function(error) {
+                    addToLog(`Lỗi WebSocket: ${error.message}`, 'system');
+                    console.error('WebSocket error:', error);
+                };
+                
+            } catch (error) {
+                console.error('Error connecting to WebSocket:', error);
+                addToLog(`Lỗi kết nối WebSocket: ${error.message}`, 'system');
+            }
+        }
+        
+        function disconnectWebSocket() {
+            if (socket) {
+                socket.close();
+                socket = null;
+            }
+        }
+        
+        // Gửi yêu cầu dự đoán
+        document.getElementById('send-prediction-btn').addEventListener('click', async function() {
+            const userId = document.getElementById('predict-user-id').value;
+            const deviceId = document.getElementById('predict-device-id').value;
+            
+            const message = document.getElementById('predict-message').value;
+            
+            let additionalData = {};
+            try {
+                additionalData = JSON.parse(document.getElementById('predict-additional-data').value);
+            } catch (error) {
+                console.error('Error parsing additional data JSON:', error);
+                showMessage('predict-response', `Lỗi: Dữ liệu JSON không hợp lệ - ${error.message}`, 'error');
+                return;
+            }
+            
+            const postData = {
+                user_id: parseInt(userId),
+                device_id: deviceId || undefined,
+                message: message || undefined,
+                ...additionalData
+            };
+            
+            try {
+                const response = await fetch(`http://${serverUrl}/api/ai-simulator/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                });
+                
+                const result = await response.json();
+                console.log('API response:', result);
+                
+                if (result.success) {
+                    showMessage('predict-response', 'Yêu cầu dự đoán đã được gửi thành công', 'success');
+                } else {
+                    showMessage('predict-response', `Lỗi: ${result.error || result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error sending prediction request:', error);
+                showMessage('predict-response', `Lỗi kết nối: ${error.message}`, 'error');
+            }
+        });
+        
+        // Gửi yêu cầu cảnh báo
+        document.getElementById('send-alert-btn').addEventListener('click', async function() {
+            const userId = document.getElementById('alert-user-id').value;
+            const deviceId = document.getElementById('alert-device-id').value;
+            const description = document.getElementById('alert-description').value;
+            const severity = document.getElementById('alert-severity').value;
+            
+            let additionalData = {};
+            try {
+                additionalData = JSON.parse(document.getElementById('alert-additional-data').value);
+            } catch (error) {
+                console.error('Error parsing additional data JSON:', error);
+                showMessage('alert-response', `Lỗi: Dữ liệu JSON không hợp lệ - ${error.message}`, 'error');
+                return;
+            }
+            
+            const postData = {
+                user_id: parseInt(userId),
+                device: deviceId || undefined,
+                description: description,
+                severity: severity,
+                ...additionalData
+            };
+            
+            try {
+                const response = await fetch(`http://${serverUrl}/api/ai-simulator/monitor/single`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postData)
+                });
+                
+                const result = await response.json();
+                console.log('API response:', result);
+                
+                if (result.success) {
+                    showMessage('alert-response', 'Yêu cầu cảnh báo đã được gửi thành công', 'success');
+                } else {
+                    showMessage('alert-response', `Lỗi: ${result.error || result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error sending alert request:', error);
+                showMessage('alert-response', `Lỗi kết nối: ${error.message}`, 'error');
+            }
+        });
+        
+        // Thêm vào log
+        function addToLog(message, type) {
+            const logContainer = document.getElementById('websocket-log');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = message;
+            logContainer.prepend(logEntry);
+        }
+        
+        // Hiển thị thông báo
+        function showMessage(elementId, message, type) {
+            const messageElement = document.getElementById(elementId);
+            messageElement.textContent = message;
+            messageElement.className = `message ${type}`;
+            messageElement.style.display = 'block';
+            
+            // Tự động ẩn sau 5 giây
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Xóa log
+        document.getElementById('clear-log-btn').addEventListener('click', function() {
+            document.getElementById('websocket-log').innerHTML = '';
+        });
+        
+        // Xóa cảnh báo
+        document.getElementById('clear-alerts-btn').addEventListener('click', function() {
+            const alerts = document.querySelectorAll('.log-entry.alert');
+            alerts.forEach(alert => alert.remove());
+        });
+        
+        // Xóa dự đoán
+        document.getElementById('clear-predictions-btn').addEventListener('click', function() {
+            const predictions = document.querySelectorAll('.log-entry.prediction');
+            predictions.forEach(prediction => prediction.remove());
+        });
+    </script>
+</body>
+</html>
