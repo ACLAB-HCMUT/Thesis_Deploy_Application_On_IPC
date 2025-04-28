@@ -1,10 +1,13 @@
 // Layout.tsx
 import React from "react";
-import { Outlet } from "react-router-dom";
-import  Sidebar, { SidebarItem }from "./components/common/Sidebar.tsx"; // Đường dẫn tới Sidebar from "./src/components/common/Sidebar.tsx"; // Đường dẫn tới Sidebar.tsx
+import { Outlet, useLocation } from "react-router-dom";
+import Sidebar, { SidebarItem } from "./components/common/Sidebar.tsx";
 import { House, TabletSmartphone, Bell, ShieldCheck, Settings } from "lucide-react";
+import GlobalNotification from "./components/common/GlobalNotification.tsx";
 
 const Layout = () => {
+    const location = useLocation(); // Sử dụng useLocation hook để lấy đường dẫn hiện tại
+    
     return (
         <div className="flex">
             <Sidebar>
@@ -15,6 +18,7 @@ const Layout = () => {
                 <SidebarItem icon={<ShieldCheck size={20} />} text="Authenticate" alert={false} active={location.pathname === "/auth"} to="/auth" />
             </Sidebar>
             <main className="flex-1">
+                <GlobalNotification />
                 <Outlet /> {/* Các page sẽ render ở đây */}
             </main>
         </div>

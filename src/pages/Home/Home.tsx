@@ -18,10 +18,10 @@ import Header from "../../components/common/Header.tsx";
 import axios from 'axios';
 import { app_id, city_id } from '../../config/env.tsx';
 
-const API_URL = "http://localhost:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com";
+const API_URL = "https://do-an-da-nganh.onrender.com/api/sensors/latest/vinhnguyenkhac20@gmail.com";
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?id=${city_id}&appid=${app_id}&units=metric`; 
 const HOURLY_FORECAST = `https://pro.openweathermap.org/data/2.5/forecast?id=${city_id}&appid=${app_id}&units=metric`;
-const CHART_MONTH = "http://localhost:8000/api/sensors/all/month/vinhnguyenkhac20@gmail.com";
+const CHART_MONTH = "https://do-an-da-nganh.onrender.com/api/sensors/all/month/vinhnguyenkhac20@gmail.com";
 
 const powerData = [
   { month: 'Ja', value: 25 },
