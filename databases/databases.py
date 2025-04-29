@@ -2,7 +2,6 @@ from pymongo import MongoClient
 import gridfs
 import requests
 import sys
-from Adafruit_IO import MQTTClient
 import os
 from dotenv import load_dotenv
 

@@ -1,0 +1,336 @@
+# /////////////////////////User//////////////////#
+
+### Get user Info
+GET http://0.0.0.0:8000/api/users/info
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrYW5AZ21haWwuY29tIn0.zCFjX27y58yQv8-6evzxCRk4nFyE0Rh8jCpAni6Plco
+
+
+
+### Sign up users
+POST http://0.0.0.0:8000/api/users/signup
+Content-Type: application/json
+
+{
+    "firstName": "Valverde",
+    "lastName": "Federico",
+    "username": "kan",
+    "password": "kan",
+    "email": "kan@gmail.com",
+    "phone": 5678,
+    "address": "6789 Le Dai Hanh Street, Ward 7 , District 5, HCM"
+}
+
+
+### Sign in
+POST http://0.0.0.0:8000/api/users/signin
+Content-Type: application/json
+
+{
+    "email": "kan@gmail.com",
+    "password": "kan"
+}
+
+
+### Update Password
+PUT http://0.0.0.0:8000/api/users/updatePassword
+Content-Type: application/json
+
+{
+    "email": "kan@gmail.com",
+    "password": "kan"
+}
+
+
+### Update information
+PUT http://0.0.0.0:8000/api/users/updateInfo
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTc0MTg3ODQ3MX0.NarExnOD3uKZ4UFSLL_quFECzJ0he1xiCZbRuCqPqYs
+
+{
+    "firstName": "Valverd",
+    "lastName": "Federico",
+    "username": "kan",
+    "password": "kan",
+    "email": "kan@gmail.com",
+    "phone": 5678,
+    "address": "6789 Le Dai Hanh Street, Ward 7 , District 5, HCM"
+}
+
+# ///////////////////////////Token/////////////#
+
+### Refresh token
+POST http://0.0.0.0:8000/api/users/refresh-token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6NDg1MDgwNjI2N30.LI2IzKX9gSCFYiadSUeHDXHG3KqiAOnTmlbDkkOtWUk
+
+
+# /////////////////////////Sensors/////////////////////#
+
+### Get latest data Sensors
+GET http://0.0.0.0:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com
+
+### Get all data Sensors month
+POST http://0.0.0.0:8000/api/sensors/create
+Content-Type: application/json
+
+{
+    "temperature": "30",
+    "humidity": "30",
+    "lux": "20",
+    "soil": "1000"
+}
+
+
+### Get all data Sensors month
+GET http://0.0.0.0:8000/api/sensors/all/month/vinhnguyenkhac20@gmail.com
+
+
+
+### Get all data Sensors week
+GET http://0.0.0.0:8000/api/sensors/all/week/vinhnguyenkhac20@gmail.com
+
+
+### Get all data Sensors day
+GET http://0.0.0.0:8000/api/sensors/all/day/vinhnguyenkhac20@gmail.com
+
+
+
+# //////////////////////////Relay////////////////#
+
+### Create new relay (Chỉ trong nutnhan_1,nutnhan_2,nutnhan_3,nutnhan_4)
+POST http://0.0.0.0:8000/api/relay/create
+Content-Type: application/json
+
+{
+    "email_user": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan2",
+    "status": "OFF"
+}
+
+
+### Get relay
+GET http://0.0.0.0:8000/api/relay/getStatus
+Content-Type: application/json
+
+{
+    "email_user": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan2"
+}
+
+
+### Get All Status relay
+GET http://0.0.0.0:8000/api/relay/getAllStatus?email_user=vinhnguyenkhac20@gmail.com
+Content-Type: application/json
+
+
+
+
+### Get history relay data
+GET http://0.0.0.0:8000/api/relay/getHistory
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan2"
+}
+
+
+### Update relay
+POST http://0.0.0.0:8000/api/relay/update
+Content-Type: application/json
+
+{
+    "email_user": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan2",
+    "status": "OFF"
+}
+
+
+### Delete relay
+DELETE http://0.0.0.0:8000/api/relay/delete
+Content-Type: application/json
+
+{
+    "email_user": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan_1"
+}
+
+
+
+
+# ////////////////////////Scheduler/////////////////#
+
+### Create new set up scheduler
+POST http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "email": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan2",
+    "timeStart": "2025-04-25T18:30:00",
+    "timeEnd": "2025-04-25T18:31:00",
+    "repeatDaily": true
+}
+
+
+### Create new set up scheduler (bị lỗi)
+POST http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "email": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan_2",
+    "timeStart": "2025-06-04T11:00:00",
+    "timeEnd": "2025-06-04T15:00:00"
+}
+
+### Create new set up scheduler (bị lỗi)
+POST http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "email": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan_2",
+    "timeStart": "2025-06-04T13:00:00",
+    "timeEnd": "2025-06-04T15:00:00"
+}
+
+### Create new set up scheduler (bị lỗi)
+POST http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "email": "vinhnguyenkhac20@gmail.com",
+    "relayName": "nutnhan_2",
+    "timeStart": "2025-06-04T13:00:00",
+    "timeEnd": "2025-06-04T14:00:00"
+}
+
+
+
+### Get data scheduler
+GET http://10.28.128.71:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+
+### Get data scheduler
+GET http://0.0.0.0:8000/api/setup/schedulerById
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "id": "67f3756443d138d4bb03a943"
+}
+
+
+### Update data scheduler
+PUT http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "id": "67dbe3c35b811a5a53c50c5a",
+    "email": "kan@gmail.com",
+    "relayName": "nutnhan_1",
+    "timeStart": "2025-03-20T14:37:07",
+    "timeEnd": "2025-03-26T15:37:07"
+}
+
+
+### Delete data scheduler
+DELETE http://0.0.0.0:8000/api/setup/scheduler
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "id": "67dbe3c35b811a5a53c50c5a"
+}
+
+### Create new set up scheduler
+POST https://:UxXo7w5yRZOc2RUVgGGyPw@tandem.autodesk.com/api/v1/timeseries/models/urn:adsk.dtm:Qqu_E6aFSyaziEBO0W53DQ/streams/AQAAAEnqquv9dEdeqU-ARNP3B9YAAAAA
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlhrUFpfSmhoXzlTYzNZS01oRERBZFBWeFowOF9SUzI1NiIsInBpLmF0bSI6ImFzc2MifQ.eyJzY29wZSI6WyJidWNrZXQ6Y3JlYXRlIiwiYnVja2V0OnJlYWQiLCJidWNrZXQ6dXBkYXRlIiwiZGF0YTpjcmVhdGUiLCJkYXRhOnJlYWQiLCJkYXRhOndyaXRlIiwidmlld2FibGVzOnJlYWQiXSwiY2xpZW50X2lkIjoid0ZRZk5yd25vVTVvZEVXTDFKNUlleTZEeXA5bUJ3dEJUQ0tqVjRBUFp1ckhGWnJNIiwiaXNzIjoiaHR0cHM6Ly9kZXZlbG9wZXIuYXBpLmF1dG9kZXNrLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tIiwianRpIjoiTWVrSHBxZ3g5VHA4dmtwRExnZkE2ZThuWEhLa0pQUDJsaHNaMjhvWTlVNDQ0bkVUaFZpNzBkVGRBYlE2cjJCeSIsImV4cCI6MTc0MzQ4NDQ2OH0.eNEMDQF3SWfQD8y8kQP_fFiJ4YIOwGYs0_Lq-02h5qYwfIXyyLKTHVuFBBkEOsyREljKH_nMcp_M-N2rzlpRz47DoodSmY9Zi8XDc4E2O7j9S0XFFcCksswp1qxZFh2i1OMAfqWkiS7v9ncOdhjsR5qhK5Ik9dNrtWglWtxuUCnah2w86pKbXkV60AcweRB1uLAiLLnzBq8voe0T5GvtO0ipIUbYtCq6nms32rJif-zrrJXbVBfULVa2hYyMvIMYaR6BE7Qs3KqPD4RZoqUJUepOf1Kg5mGo9YiNPUXVbwgUte0gq5YEYKiXKFENWviyUOk9WRNLR0zifZ49m4_0HA
+
+{
+	"temperature": 4534,
+    "co2": 744,
+    "noise": 55,
+    "dust": 12,
+    "co": 0.5,
+    "voc": 0.3,
+    "timestamp": 1711608197
+}
+
+### Create new set up scheduler
+POST http://0.0.0.0:8000/api/ai-simulator/monitor/continuous
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "device_id": "device_123", // không bắt buộc
+    "duration": 60 // thời gian theo dõi (giây)
+}
+
+### Create new set up scheduler
+POST http://0.0.0.0:8000/api/ai-simulator/monitor/single
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "device": "Tên sensors",
+    "description": "Bị hỏng"
+}
+
+
+### Create new set up scheduler
+POST http://0.0.0.0:8000/api/ai-simulator/predict
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "ngay thu hoach": "device_123",
+    "crop_type": "Lúa",
+    "ngay con lai":,
+    "suc khoe cay trong"
+}
+
+### Create canh bao qua socket tu AI  
+POST http://10.28.128.38:8000/api/ai-simulator/monitor/single
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "device": "Cảm biến độ ẩm",
+  "description": "Độ ẩm cao bất thường",
+  "issue": "Độ ẩm quá cao",
+  "recommendation": "Tăng cường hệ thống làm mát",
+  "message": "Cảnh báo: Phát hiện nhiệt độ cao bất thường tại khu vực trồng lúa"
+}
+
+### Create new set up threshold
+PUT http://0.0.0.0:8000/api/setup/threshold
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+{
+    "temperature_threshold": 20,
+    "humidity_threshold": 20,
+    "humidity_soil_threshold": 20,
+    "light_threshold": 20
+}
+
+### Delete set up threshold
+DELETE  http://0.0.0.0:8000/api/setup/threshold
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
+
+### Get set up threshold
+GET http://0.0.0.0:8000/api/setup/threshold
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
+
