@@ -105,7 +105,7 @@ const refresh_token = async () => {
       //     body: JSON.stringify({ refreshToken }),
       // });
       // const res = await fetch("http://localhost:8000/api/users/refresh-token", {
-      const res = await fetch("https://do-an-da-nganh.onrender.com/api/users/refresh-token", {  
+      const res = await fetch("http://localhost:3000/api/users/refresh-token", {  
       method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -148,7 +148,7 @@ const handleSubmit = async (e) => {
     const requestBody = { email: formData.email_phone, password: formData.password };
     console.log("4. Request body:", requestBody);
 
-    const res = await fetch("https://do-an-da-nganh.onrender.com/api/users/signin", {
+    const res = await fetch("http://localhost:3000/api/users/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),

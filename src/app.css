@@ -1,5 +1,5 @@
 .welcome {
-    background-image: url('./assets/image/background_welcome.png');
+    background-image: url('./assets/image/farmer.jpg');
     background-size: cover;  /* Đảm bảo ảnh phủ toàn bộ phần tử */
     background-position: top;  /* Căn hình ảnh vào phần trên của phần tử */
     background-repeat: no-repeat;  /* Không lặp lại ảnh */

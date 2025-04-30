@@ -13,7 +13,7 @@ function Navbar() {
       <div>
       <Link
         to="/login"
-        className="w-full mx-2 px-4 py-2 border-white bg-white rounded-full font-bold hover:bg-gray-200 hover:text-black transition text-[12px] bg-opacity-40 text-white hover:text-black transition-all duration-500">
+        className="w-full mx-2 px-4 py-2 border-white bg-white rounded-full font-bold hover:bg-gray-200 text-black transition text-[12px] bg-opacity-40 text-white transition-all duration-500">
         LOGIN
       </Link>
       

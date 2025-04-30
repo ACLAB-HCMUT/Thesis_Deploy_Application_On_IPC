@@ -5,7 +5,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const { exec } = require('child_process');
 const os = require('os');
-const qrcode = require('qrcode');
+// const qrcode = require('qrcode');
 
 // Global variables
 let mainWindow;

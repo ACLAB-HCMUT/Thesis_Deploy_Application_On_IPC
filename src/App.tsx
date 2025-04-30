@@ -11,7 +11,6 @@ import NotificationPage from './pages/Notification/notification.tsx';
 import Setting from './pages/Setting/Settings.tsx';
 import Auth from './pages/authentication/authentication.tsx';
 import Profile from './pages/Profile/Profile.tsx';
-import IPToQRCode from './IPToQRCode.tsx';
 import Layout from  './Layout.tsx';
 import ErrorPage from './ErrorPage.tsx'; // Tạo một component ErrorPage
 import './app.css';

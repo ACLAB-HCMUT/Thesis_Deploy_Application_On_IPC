@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-const background = require("../../assets/image/cut.png");
+const background = require("../../assets/image/farmer.jpg");
 
 import {Link} from 'react-router-dom'
 import { Alert } from "flowbite-react";
