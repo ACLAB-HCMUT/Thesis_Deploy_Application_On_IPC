@@ -17,12 +17,21 @@ interface Alert {
 }
 
 interface Prediction {
-  harvest_date: string;
-  confidence: number;
-  days_remaining: number;
-  crop_health: string;
-  crop_type: string;
+  harvest_date?: string;
+  confidence?: number;
+  days_remaining?: number;
+  crop_health?: string;
+  crop_type?: string;
   care_recommendation?: string;
+  develop_stage?: string;    // Thêm trường mới
+  risk?: string;             // Thêm trường mới
+  symptom?: string;          // Thêm trường mới
+  device_id?: string;        // Thêm trường từ ai_simulator_controller
+  sensor_data?: any;         // Thêm trường từ ai_simulator_controller
+  timestamp?: string;        // Thêm trường từ ai_simulator_controller
+  estimated_yield?: string;  // Thêm trường từ ai_simulator_controller
+  health_issues?: string[];  // Thêm trường từ ai_simulator_controller
+  recommendations?: string[]; // Thêm trường từ ai_simulator_controller       
 }
 
 interface Notification {
@@ -307,63 +316,69 @@ const NotificationPage = () => {
   }, [notifications]);
 
   // Hàm gửi yêu cầu dự đoán thủ công
-  const handlePredict = async () => {
-    console.log("Sending prediction request...");
-    try {
-      const response = await fetch('http://localhost:8000/api/notifications/predict_harvest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: 1,
-          input_data: {
-            crop_type: "tomato",
-            planting_date: new Date().toISOString().split('T')[0]
-          }
-        }),
-      });
-      
-      const data = await response.json();
-      console.log('Prediction response:', data);
-      
-      if (!response.ok) {
-        throw new Error(data.message || 'Prediction failed');
-      }
-      
-      // Thêm thông báo trực tiếp từ response nếu không nhận được qua WebSocket
-      if (data.success && data.notification) {
-        // Tạo và hiển thị thông báo dự đoán sử dụng GlobalNotification
-        const notificationId = showPredictionNotification(
-          'Dự đoán thu hoạch',
-          data.notification.message,
-          data.prediction
-        );
-        
-        const newNotification: Notification = {
-          id: notificationId,
-          title: 'Dự đoán thu hoạch',
-          message: data.notification.message,
-          date: new Date().toISOString().split('T')[0],
-          isRead: false,
-          prediction: data.prediction,
-          type: 'prediction'
-        };
-        
-        // Cải thiện: Đảm bảo cập nhật unreadCount sau khi thêm thông báo mới
-        setNotifications(prev => {
-          const updatedNotifications = [newNotification, ...prev];
-          // Cập nhật số lượng thông báo chưa đọc
-          const newUnreadCount = updatedNotifications.filter(n => !n.isRead).length;
-          updateUnreadCount(newUnreadCount);
-          return updatedNotifications;
-        });
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert(`Lỗi khi gửi yêu cầu dự đoán: ${error.message}`);
+const handlePredict = async () => {
+  console.log("Sending prediction request...");
+  try {
+    // Cập nhật URL để sử dụng endpoint mới
+    const response = await fetch('http://localhost:8000/api/ai-simulator/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: 1,
+        // Các trường mới (không bao gồm ngày thu hoạch và ngày còn lại)
+        care_recommendation: "Tăng cường Nito", 
+        develop_stage: "Phát triển",
+        risk: "Dễ bị bệnh",
+        symptom: "lá héo",
+        // Dữ liệu về cây trồng
+        crop_type: "Cà chua",
+        crop_health: "Trung bình",
+        // Message hiển thị trên thông báo
+        message: "Phát hiện tình trạng thiếu dưỡng chất trên cây Cà chua"
+      }),
+    });
+    
+    const data = await response.json();
+    console.log('Prediction response:', data);
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Prediction failed');
     }
-  };
+    
+    // Xử lý thông báo từ response
+    if (data.success && data.prediction) {
+      // Tạo và hiển thị thông báo dự đoán sử dụng GlobalNotification
+      const notificationId = showPredictionNotification(
+        'Dự đoán phân tích cây trồng',
+        data.message || 'Hệ thống đã phân tích tình trạng cây trồng của bạn',
+        data.prediction
+      );
+      
+      const newNotification: Notification = {
+        id: notificationId,
+        title: 'Phân tích cây trồng',
+        message: data.message || 'Hệ thống đã phân tích tình trạng cây trồng của bạn',
+        date: new Date().toISOString().split('T')[0],
+        isRead: false,
+        prediction: data.prediction,
+        type: 'prediction'
+      };
+      
+      // Cập nhật state
+      setNotifications(prev => {
+        const updatedNotifications = [newNotification, ...prev];
+        const newUnreadCount = updatedNotifications.filter(n => !n.isRead).length;
+        updateUnreadCount(newUnreadCount);
+        return updatedNotifications;
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert(`Lỗi khi gửi yêu cầu dự đoán: ${error.message}`);
+  }
+};
 
   // Group notifications by date
   const groupedNotifications: { [key: string]: Notification[] } = notifications.reduce(
@@ -450,30 +465,98 @@ const NotificationPage = () => {
   };
 
   // Hàm hiển thị chi tiết dự đoán
-  const renderPredictionDetails = (prediction: Prediction) => {
-    return (
-      <div className="mt-2 bg-blue-50 p-3 rounded-lg">
-        <h4 className="font-medium text-blue-800 mb-2">Chi tiết dự đoán:</h4>
-        <div className="grid grid-cols-2 gap-2 text-sm">
+  // Hàm hiển thị chi tiết dự đoán - Đã loại bỏ ngày thu hoạch và ngày còn lại
+const renderPredictionDetails = (prediction: Prediction) => {
+  return (
+    <div className="mt-2 bg-blue-50 p-3 rounded-lg">
+      <h4 className="font-medium text-blue-800 mb-2">Chi tiết phân tích:</h4>
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        {prediction.crop_type && (
           <div>
             <span className="font-medium">Loại cây trồng:</span> {prediction.crop_type}
           </div>
+        )}
+        
+        {prediction.develop_stage && (
           <div>
-            <span className="font-medium">Ngày thu hoạch:</span> {formatVietnameseDate(prediction.harvest_date)}
+            <span className="font-medium">Giai đoạn:</span> {prediction.develop_stage}
           </div>
-          <div>
-            <span className="font-medium">Còn lại:</span> {prediction.days_remaining} ngày
-          </div>
+        )}
+        
+        {prediction.crop_health && (
           <div>
             <span className="font-medium">Tình trạng cây:</span> {prediction.crop_health}
           </div>
+        )}
+        
+        {prediction.symptom && (
+          <div>
+            <span className="font-medium">Triệu chứng:</span> {prediction.symptom}
+          </div>
+        )}
+        
+        {prediction.risk && (
+          <div>
+            <span className="font-medium">Rủi ro:</span> {prediction.risk}
+          </div>
+        )}
+        
+        {prediction.estimated_yield && (
+          <div>
+            <span className="font-medium">Năng suất dự kiến:</span> {prediction.estimated_yield}
+          </div>
+        )}
+        
+        {prediction.care_recommendation && (
           <div className="col-span-2">
             <span className="font-medium">Khuyến nghị chăm sóc:</span> {prediction.care_recommendation}
           </div>
-        </div>
+        )}
+        
+        {prediction.recommendations && prediction.recommendations.length > 0 && (
+          <div className="col-span-2">
+            <span className="font-medium">Khuyến nghị:</span>
+            <ul className="list-disc pl-5 mt-1">
+              {prediction.recommendations.map((rec, index) => (
+                <li key={index}>{rec}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {prediction.health_issues && prediction.health_issues.length > 0 && (
+          <div className="col-span-2">
+            <span className="font-medium">Vấn đề sức khỏe:</span>
+            <ul className="list-disc pl-5 mt-1">
+              {prediction.health_issues.map((issue, index) => (
+                <li key={index}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {prediction.device_id && (
+          <div>
+            <span className="font-medium">Thiết bị:</span> {prediction.device_id}
+          </div>
+        )}
       </div>
-    );
-  };
+      
+      {prediction.sensor_data && (
+        <div className="mt-3">
+          <h5 className="font-medium text-blue-800 mb-1">Dữ liệu cảm biến:</h5>
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            {Object.entries(prediction.sensor_data).map(([key, value]) => (
+              <div key={key} className="bg-white p-1 rounded">
+                <span className="font-medium">{key}:</span> {value}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
   // Hàm hiển thị chi tiết cảnh báo
   const renderAlertDetails = (alert: Alert) => {
@@ -607,7 +690,7 @@ const NotificationPage = () => {
             >
               <h3 className="text-white font-medium flex items-center">
                 <Calendar className="h-5 w-5 mr-2" />
-                Dự đoán thu hoạch mới nhất
+                Phân tích cây trồng mới nhất
               </h3>
               <button className="text-white">
                 {isAIPredictionExpanded ? '−' : '+'}
@@ -619,38 +702,61 @@ const NotificationPage = () => {
                 <div className="flex flex-col sm:flex-row justify-between mb-4">
                   <div>
                     <h4 className="text-lg font-medium text-gray-900">
-                      {latestPrediction.crop_type.charAt(0).toUpperCase() + latestPrediction.crop_type.slice(1)}
+                      {latestPrediction.crop_type ? 
+                        `${latestPrediction.crop_type.charAt(0).toUpperCase() + latestPrediction.crop_type.slice(1)}` : 
+                        'Cây trồng'}
                     </h4>
-                    <p className="text-sm text-gray-500">
-                      Tình trạng: {latestPrediction.crop_health}
-                    </p>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {latestPrediction.develop_stage && (
+                        <p className="text-sm bg-gray-100 rounded-full px-2 py-1">
+                          Giai đoạn: {latestPrediction.develop_stage}
+                        </p>
+                      )}
+                      {latestPrediction.crop_health && (
+                        <p className="text-sm bg-green-100 rounded-full px-2 py-1">
+                          Tình trạng: {latestPrediction.crop_health}
+                        </p>
+                      )}
+                      {latestPrediction.symptom && (
+                        <p className="text-sm bg-amber-100 rounded-full px-2 py-1">
+                          Triệu chứng: {latestPrediction.symptom}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  
-                 
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <div className="text-blue-800 text-xs uppercase font-medium mb-1">Ngày thu hoạch</div>
-                    <div className="text-lg font-semibold">
-                      {formatVietnameseDate(latestPrediction.harvest_date)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {latestPrediction.care_recommendation && (
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <div className="text-green-800 text-xs uppercase font-medium mb-1">Khuyến nghị</div>
+                      <div className="text-lg font-semibold">
+                        {latestPrediction.care_recommendation}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   
-                  <div className="bg-amber-50 p-3 rounded-lg">
-                    <div className="text-amber-800 text-xs uppercase font-medium mb-1">Còn lại</div>
-                    <div className="text-lg font-semibold">
-                      {latestPrediction.days_remaining} ngày
+                  {latestPrediction.risk && (
+                    <div className="bg-red-50 p-3 rounded-lg">
+                      <div className="text-red-800 text-xs uppercase font-medium mb-1">Rủi ro</div>
+                      <div className="text-lg font-semibold">{latestPrediction.risk}</div>
                     </div>
-                  </div>
-                  
-                  <div className="bg-green-50 p-3 rounded-lg">
-                    <div className="text-green-800 text-xs uppercase font-medium mb-1">Khuyến nghị</div>
-                    <div className="text-lg font-semibold">
-                      {latestPrediction.care_recommendation}
-                    </div>
-                  </div>
+                  )}
                 </div>
+                
+                {latestPrediction.sensor_data && (
+                  <div className="mt-4 border-t pt-3">
+                    <h5 className="text-sm font-medium text-gray-700 mb-2">Dữ liệu cảm biến:</h5>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                      {Object.entries(latestPrediction.sensor_data).map(([key, value]) => (
+                        <div key={key} className="bg-gray-50 p-2 rounded text-center">
+                          <div className="text-xs text-gray-500 uppercase">{key}</div>
+                          <div className="font-medium">{value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -850,15 +956,24 @@ const paginatedGroups: Record<string, Notification[]> = paginatedNotifications.r
               
               <button
                 onClick={() => {
-                  // Test dự đoán thu hoạch
+                  // Test phân tích cây trồng với thông tin mới (đã loại bỏ ngày thu hoạch)
                   const testPrediction: Prediction = {
-                    harvest_date: new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
-                    confidence: 85, // vẫn giữ lại
-                    days_remaining: 30,
-                    crop_health: 'Tốt',
-                    // estimated_yield: '15-20 kg/m²', // vẫn giữ lại
+                    confidence: 85,
+                    crop_health: 'Trung bình',
                     crop_type: 'cà chua',
-                    care_recommendation: 'Tưới nước đều đặn và thêm phân bón lân. Kiểm tra dấu hiệu sâu bệnh mỗi tuần.'
+                    care_recommendation: 'Tăng cường Nito và phân bón lân',
+                    develop_stage: 'Phát triển',
+                    risk: 'Dễ bị bệnh',
+                    symptom: 'Lá héo nhẹ',
+                    // Dữ liệu cảm biến mẫu
+                    device_id: 'device_123',
+                    sensor_data: {
+                      temperature: 29.5,
+                      humidity: 75.2,
+                      soil_moisture: 42.3,
+                      light_intensity: 8500,
+                      pH: 6.4
+                    }
                   };
                   
                   // Cập nhật dự đoán mới nhất
@@ -867,8 +982,8 @@ const paginatedGroups: Record<string, Notification[]> = paginatedNotifications.r
                   // Thêm thông báo mới
                   const testNotification: Notification = {
                     id: Date.now(),
-                    title: 'Dự đoán thu hoạch mới',
-                    message: 'Hệ thống đã tạo một dự đoán thu hoạch mới cho cây trồng của bạn.',
+                    title: 'Phân tích cây trồng mới',
+                    message: `Phân tích: Cây ${testPrediction.crop_type} (${testPrediction.develop_stage}) của bạn có tình trạng: ${testPrediction.crop_health}, triệu chứng: ${testPrediction.symptom}. Khuyến nghị: ${testPrediction.care_recommendation}.`,
                     date: new Date().toISOString().split('T')[0],
                     isRead: false,
                     prediction: testPrediction,
@@ -882,7 +997,7 @@ const paginatedGroups: Record<string, Notification[]> = paginatedNotifications.r
                 }}
                 className="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
               >
-                Test dự đoán
+                Test phân tích
               </button>
               
               <button

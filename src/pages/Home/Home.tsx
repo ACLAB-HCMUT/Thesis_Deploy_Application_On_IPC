@@ -18,10 +18,10 @@ import Header from "../../components/common/Header.tsx";
 import axios from 'axios';
 import { app_id, city_id } from '../../config/env.tsx';
 
-const API_URL = "http://0.0.0.0:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com";
+const API_URL = "http://localhost:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com";
 const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?id=${city_id}&appid=${app_id}&units=metric`; 
 const HOURLY_FORECAST = `https://pro.openweathermap.org/data/2.5/forecast?id=${city_id}&appid=${app_id}&units=metric`;
-const CHART_MONTH = "http://0.0.0.0:8000/api/sensors/all/month/vinhnguyenkhac20@gmail.com";
+const CHART_MONTH = "http://localhost:8000/api/sensors/all/week/vinhnguyenkhac20@gmail.com";
 
 const powerData = [
   { month: 'Ja', value: 25 },
@@ -59,14 +59,14 @@ const WeatherCard = ({ title, value, unit, icon: Icon }: { title: string; value:
   </div>
 );
 
-const PowerChart = ({title, data} : { title: string; data: { month: string; value: number }[] }) => (
+const PowerChart = ({title, data} : { title: string; data: { day: string; value: number }[] }) => (
   <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
     <CardContent className="p-3 sm:p-6">
       <div className="flex justify-between items-center mb-4 sm:mb-6">
         <h3 className="text-sm sm:text-base text-gray-800 font-semibold">{title}</h3>
         <div className="flex items-center gap-2">
           <select className="bg-gray-900 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium">
-            <option>Month</option>
+            <option>Day</option>
           </select>
           <button className="bg-gray-900 text-white p-1 sm:p-2 rounded-lg hover:bg-gray-800 transition-colors">
             &gt;
@@ -84,7 +84,7 @@ const PowerChart = ({title, data} : { title: string; data: { month: string; valu
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+            <XAxis dataKey="day" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
             <YAxis stroke="#9CA3AF" tick={{ fontSize: 12 }} />
             <Tooltip 
               contentStyle={{ backgroundColor: '#1F2937', border: 'none' }}
@@ -124,16 +124,75 @@ const HourlyForecast = ({ time, icon, temp }: { time: string; icon: string; temp
   </div>
 );
 
+const NPKChart = ({ title, data }: { title: string; data: { day: string; N_soil: number; P_soil: number; K_soil: number }[] }) => (
+  <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+    <CardContent className="p-3 sm:p-6">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h3 className="text-sm sm:text-base text-gray-800 font-semibold">{title}</h3>
+        <div className="flex items-center gap-2">
+          <select className="bg-gray-900 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium">
+            <option>Week</option>
+          </select>
+          <button className="bg-gray-900 text-white p-1 sm:p-2 rounded-lg hover:bg-gray-800 transition-colors">
+            &gt;
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl p-3 sm:p-6">
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis dataKey="day" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+            <YAxis stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+            <Tooltip
+              contentStyle={{ backgroundColor: '#1F2937', border: 'none' }}
+              labelStyle={{ color: '#fff', fontSize: 12 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="N_soil"
+              stroke="#EF4444" // Màu đỏ cho Nitơ
+              strokeWidth={2}
+              dot={{ stroke: '#EF4444', strokeWidth: 2, fill: '#1F2937' }}
+              activeDot={{ r: 6, stroke: '#EF4444', strokeWidth: 2, fill: '#FEE2E2' }}
+              name="Nitrogen"
+            />
+            <Line
+              type="monotone"
+              dataKey="P_soil"
+              stroke="#10B981" // Màu xanh lá cho Phốt pho
+              strokeWidth={2}
+              dot={{ stroke: '#10B981', strokeWidth: 2, fill: '#1F2937' }}
+              activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#D1FAE5' }}
+              name="Phosphorus"
+            />
+            <Line
+              type="monotone"
+              dataKey="K_soil"
+              stroke="#F59E0B" // Màu vàng cho Kali
+              strokeWidth={2}
+              dot={{ stroke: '#F59E0B', strokeWidth: 2, fill: '#1F2937' }}
+              activeDot={{ r: 6, stroke: '#F59E0B', strokeWidth: 2, fill: '#FEF3C7' }}
+              name="Potassium"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </CardContent>
+  </div>
+);
+
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [data, setData] = useState<{ temperature: number; humidity: number }[]>([]);
+  const [data, setData] = useState<{ temperature: number; humidity_soil: number; lux: number; N_soil: number; P_soil: number; K_soil: number;}[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [weatherData, setWeatherData] = useState<{ name: string; main: { temp: number }; weather: { description: string, icon: string }[] } | null>(null);
-  const [tempChart, setTempChart] = useState<{ month: string; value: number }[]>([]);
-  const [humidityChart, setHumidityChart] = useState<{ month: string; value: number }[]>([]);
-  const [soilTempChart, setSoilTempChart] = useState<{ month: string; value: number }[]>([]);
-  const [soilHumidityChart, setSoilHumidityChart] = useState<{ month: string; value: number }[]>([]); 
+  const [tempChart, setTempChart] = useState<{ day: string; value: number }[]>([]);
+  const [humiditySoilChart, setHumiditySoilChart] = useState<{ day: string; value: number }[]>([]);
+  const [luxChart, setLuxChart] = useState<{ day: string; value: number }[]>([]);
+  const [soilNPKChart, setNPKChart] = useState<{ day: string; value: number }[]>([]); 
   const [forecast, setForecast] = useState<ForecastItem[]>([]);
   // const [tempChart, setTempChart] = useState([]);
   // const [humidityChart, setHumidityChart] = useState([]);
@@ -207,19 +266,24 @@ export default function Home() {
       const sensorData = response.data.data.sensor_data;
      
       setTempChart(
-        sensorData.map(item => ({ month: item.month, value: item.temperature }))
+        sensorData.map(item => ({ day: item.day, value: item.temperature }))
       );
 
-      setHumidityChart(
-        sensorData.map(item => ({ month: item.month, value: item.humidity }))
+      setHumiditySoilChart(
+        sensorData.map(item => ({ day: item.day, value: item.humidity_soil }))
       );
 
-      setSoilTempChart(
-        sensorData.map(item => ({ month: item.month, value: item.temperature }))
+      setLuxChart(
+        sensorData.map(item => ({ day: item.day, value: item.lux }))
       );
 
-      setSoilHumidityChart(
-        sensorData.map(item => ({ month: item.month, value: item.humidity }))
+      setNPKChart(
+        sensorData.map(item => ({
+          day: item.day,
+          N_soil: item.N_soil,
+          P_soil: item.P_soil,
+          K_soil: item.K_soil
+        }))
       );
 
       console.log(tempChart);
@@ -267,40 +331,55 @@ export default function Home() {
             <PowerChart key={index} data={tempChart} />
           ))} */}
           <PowerChart key="tempChart" title="Temperature" data={tempChart} />
-          <PowerChart key="humidityChart" title="Humidity" data={humidityChart} />
-          <PowerChart key="soilTempChart" title="Soil Temperature" data={soilTempChart} />
-          <PowerChart key="soilhumidityChart" title="Soil Humidity" data={soilHumidityChart} />
+          <PowerChart key="humidityChart" title="Humidity Soil" data={humiditySoilChart} />
+          <PowerChart key="soilTempChart" title="Lux" data={luxChart} />
+          <NPKChart key="npkChart" title="NPK" data={soilNPKChart} />
         </div>
 
         {/* Weather Stats */}
-        {data.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-            <WeatherCard 
-              title="Temperature Air" 
-              value={data[0].temperature}
-              unit="°C" 
-              icon={Thermometer}
-            />
-            <WeatherCard 
-              title="Humidity Air" 
-              value={data[0].humidity} 
-              unit="%" 
-              icon={Droplets}
-            />
-            <WeatherCard 
-              title="Temperature Soil" 
-              value={data[0].temperature}
-              unit="°C" 
-              icon={Thermometer}
-            />
-            <WeatherCard 
-              title="Humidity Soil" 
-              value={data[0].humidity}  
-              unit="%" 
-              icon={Droplets}
-            />
-          </div>
-        )}
+        {/* Weather Stats */}
+{data.length > 0 && (
+  <div className="flex justify-center items-center">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl">
+      <WeatherCard 
+        title="Temperature Air" 
+        value={data[0].temperature}
+        unit="°C" 
+        icon={Thermometer}
+      />
+      <WeatherCard 
+        title="Humidity Soil" 
+        value={data[0].humidity_soil} 
+        unit="%" 
+        icon={Droplets}
+      />
+      <WeatherCard 
+        title="Lux" 
+        value={data[0].lux}
+        unit="lux" // Sửa đơn vị từ "ppm" thành "lux" cho chính xác
+        icon={Sun} // Sửa icon thành Sun để phù hợp hơn với ánh sáng
+      />
+      <WeatherCard 
+        title="Nitrogen Soil" // Sửa chính tả từ "Nito" thành "Nitrogen"
+        value={data[0].N_soil}  
+        unit="mg/kg" // Sửa đơn vị từ "%" thành "mg/kg" cho phù hợp
+        icon={Droplets}
+      />
+      <WeatherCard 
+        title="Phosphorus Soil" // Sửa chính tả từ "Photpho" thành "Phosphorus"
+        value={data[0].P_soil}  
+        unit="mg/kg" // Sửa đơn vị từ "%" thành "mg/kg" cho phù hợp
+        icon={Droplets}
+      />
+      <WeatherCard 
+        title="Potassium Soil" // Sửa chính tả từ "Kali" thành "Potassium" cho đồng nhất
+        value={data[0].K_soil}  
+        unit="mg/kg" // Sửa đơn vị từ "%" thành "mg/kg" cho phù hợp
+        icon={Droplets}
+      />
+    </div>
+  </div>
+)}
 
         {/* Weather Forecast */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100">
