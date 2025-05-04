@@ -9,122 +9,10 @@ const os = require('os');
 
 // Global variables
 let mainWindow;
-let cachedIP = null;
 
-// Đường dẫn đến script Python để lấy IP
-const pythonScriptPath = path.join(app.getAppPath(), 'get_ip.py');
-
-// Hàm chạy script Python để lấy IPv4 trực tiếp
-function runPythonScriptDirect() {
-  return new Promise((resolve, reject) => {
-    console.log('===== Lấy IP trực tiếp từ script Python =====');
-    console.log(`Script path: ${pythonScriptPath}`);
-    
-    // Thực thi script Python và lấy output trực tiếp
-    exec(`python "${pythonScriptPath}"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error executing Python script: ${error.message}`);
-        reject(error);
-        return;
-      }
-      
-      if (stderr) {
-        console.warn(`Python script stderr: ${stderr}`);
-      }
-      
-      // Lấy IP trực tiếp từ stdout
-      const ip = stdout.trim();
-      console.log(`IP lấy trực tiếp từ Python: ${ip}`);
-      
-      if (!ip || ip === '') {
-        console.error('IP không hợp lệ từ Python script');
-        reject(new Error('Invalid IP from Python script'));
-        return;
-      }
-      
-      resolve(ip);
-    });
-  });
-}
-
-// Hàm lấy IP từ OS (dùng làm fallback)
-function getLocalIPFromOS() {
-  try {
-    console.log('Getting IP from OS network interfaces...');
-    const interfaces = os.networkInterfaces();
-    for (const interfaceName in interfaces) {
-      const iface = interfaces[interfaceName];
-      for (const alias of iface) {
-        if (alias.family === 'IPv4' && !alias.internal) {
-          console.log(`Found IP from OS: ${alias.address}`);
-          return alias.address;
-        }
-      }
-    }
-    console.log('No suitable IP found, returning localhost');
-    return '127.0.0.1';
-  } catch (error) {
-    console.error(`Error getting IP from OS: ${error.message}`);
-    return '127.0.0.1';
-  }
-}
-
-// Hàm kết hợp lấy IP từ Python hoặc OS
-async function getIPv4() {
-  if (cachedIP) {
-    console.log(`Using cached IP: ${cachedIP}`);
-    return cachedIP;
-  }
-  
-  try {
-    // Lấy IP trực tiếp từ script Python
-    const ip = await runPythonScriptDirect();
-    cachedIP = ip;
-    console.log(`IP đã được set: ${ip}`);
-    return ip;
-  } catch (error) {
-    console.error('Failed to get IP from Python script:', error);
-    // Fallback to OS method
-    const ip = getLocalIPFromOS();
-    cachedIP = ip;
-    return ip;
-  }
-}
-
-function getLocalIP() {
-  return new Promise((resolve, reject) => {
-    // Đường dẫn đến file Python (điều chỉnh theo cấu trúc dự án của bạn)
-    const pythonPath = path.join(__dirname, 'src', 'get_ip.py');
-    
-    // Chạy script Python
-    const pythonProcess = spawn('python', [pythonPath]);
-    
-    let output = '';
-    
-    // Lấy output từ script Python
-    pythonProcess.stdout.on('data', (data) => {
-      output += data.toString();
-    });
-    
-    // Xử lý lỗi
-    pythonProcess.stderr.on('data', (data) => {
-      console.error(`Python error: ${data}`);
-      reject(`Python error: ${data}`);
-    });
-    
-    // Khi process kết thúc
-    pythonProcess.on('close', (code) => {
-      if (code !== 0) {
-        reject(`Python process exited with code ${code}`);
-      } else {
-        // Trả về IP (loại bỏ khoảng trắng và ký tự xuống dòng)
-        resolve(output.trim());
-      }
-    });
-  });
-}
-
+// Thêm các log để debug trong hàm createWindow của electron.js
 function createWindow() {
+  console.log('Creating window...');
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -133,7 +21,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       enableRemoteModule: false,
-      preload: path.join(app.getAppPath(), 'src', 'preload.tsx')
+      preload: path.join(__dirname, 'preload.js') // Đảm bảo đường dẫn đúng
     },
     autoHideMenuBar: true,
   });
@@ -144,8 +32,49 @@ function createWindow() {
   // Lưu trữ window reference
   mainWindow = win;
   
-  // Optional: Open DevTools in development
+  // Mở DevTools để debug
   win.webContents.openDevTools();
+
+  // Không cần đọc file IP.txt nữa vì React sẽ import trực tiếp từ JSON
+  // Tuy nhiên, vẫn nên chạy script Python để tạo file IP.json
+  
+  // Chạy script Python để cập nhật IP
+  exec('python get_ip.py', (error, stdout, stderr) => {
+    if (error) {
+      console.error('Error executing Python script:', error);
+      return;
+    }
+    
+    if (stderr) {
+      console.error('Python script stderr:', stderr);
+    }
+    
+    const ip = stdout.trim();
+    console.log('IP obtained from Python script:', ip);
+    
+    // Kiểm tra xem file JSON đã được tạo chưa
+    const ipJsonPath = path.join(__dirname, '../src/pages/authentication/ip.json');
+    console.log('Path to IP JSON file:', ipJsonPath);
+    
+    fs.access(ipJsonPath, fs.constants.F_OK, (err) => {
+      if (err) {
+        console.error('IP JSON file was not created by Python script:', err);
+        
+        // Tạo file JSON với IP từ output của script nếu file không tồn tại
+        const jsonData = JSON.stringify({ ipAddress: ip || '127.0.0.1' });
+        
+        fs.writeFile(ipJsonPath, jsonData, (writeErr) => {
+          if (writeErr) {
+            console.error('Failed to create IP JSON file:', writeErr);
+          } else {
+            console.log('Created IP JSON file with IP:', ip);
+          }
+        });
+      } else {
+        console.log('IP JSON file exists (created by Python script)');
+      }
+    });
+  });
 }
 
 function showNotification(title, body) {
@@ -170,34 +99,6 @@ function showNotification(title, body) {
     isRead: false,
   });
 }
-
-// IPC Handlers
-ipcMain.handle('get-ipv4', async () => {
-  const ip = await getIPv4();
-  console.log(`IPC: Returning IP: ${ip}`);
-  return ip;
-});
-
-// Handler để tạo QR code với IP và port
-ipcMain.handle('generate-ipv4-qr', async (event, { path: urlPath = '/login', port = '3000' }) => {
-  try {
-    const ip = await getIPv4();
-    const url = `http://${ip}:${port}${urlPath}`;
-    console.log(`Generating QR code for URL: ${url}`);
-    
-    // Tạo QR code image
-    const qrImage = await qrcode.toDataURL(url);
-    
-    return {
-      url,
-      ipv4: ip,
-      qrImage
-    };
-  } catch (error) {
-    console.error('Error generating QR code:', error);
-    throw error;
-  }
-});
 
 // Xử lý các thông báo
 ipcMain.on('send-notification', (event, { title, body }) => {
