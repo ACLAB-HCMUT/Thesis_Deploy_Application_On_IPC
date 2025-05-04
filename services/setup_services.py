@@ -47,7 +47,7 @@ def service_create_setup_scheduler(body):
             existing_end = datetime.fromisoformat(schedule['timeEnd'])
             
             # Check for overlap - if new start is before existing end AND new end is after existing start
-            if (start_datetime <= existing_start and end_datetime >= existing_end):
+            if (start_datetime >= existing_start and end_datetime >= existing_end):
                 # Format recommendation datetime
                 recommended_start = existing_end.strftime("%Y-%m-%d %H:%M:%S")
                 

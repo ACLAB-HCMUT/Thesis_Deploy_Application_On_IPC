@@ -12,6 +12,13 @@ async def api_predict_harvest(request: Request):
     body = await request.json()
     return await predict_harvest(body)
 
+@router.post("/predict")
+async def api_ai_simulator_predict(request: Request):
+    """
+    Endpoint mới cho AI simulator predict với các trường mới
+    """
+    body = await request.json()
+    return await predict_harvest(body)
 # @router.post("/scheduler/{action}")
 # async def api_manage_scheduler(action: str):
 #     """

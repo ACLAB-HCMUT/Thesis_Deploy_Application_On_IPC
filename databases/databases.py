@@ -27,6 +27,7 @@ db = client["db_da_nganh"]
 fs = gridfs.GridFS(db)
 
 collection_sensor = db["sensors"]
+collection_sensor_data = db["sensors_data"]
 collection_user = db["users"]
 collection_relay = db["relay"]
 collection_setup_temperature = db["setup_temperature"]

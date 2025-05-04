@@ -160,15 +160,15 @@ Content-Type: application/json
 # ////////////////////////Scheduler/////////////////#
 
 ### Create new set up scheduler
-POST http://0.0.0.0:8000/api/setup/scheduler
+POST https://do-an-da-nganh.onrender.com/api/setup/scheduler
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
 
 {
     "email": "vinhnguyenkhac20@gmail.com",
     "relayName": "nutnhan2",
-    "timeStart": "2025-04-25T18:30:00",
-    "timeEnd": "2025-04-25T18:31:00",
+    "timeStart": "2025-05-04T18:30:00",
+    "timeEnd": "2025-05-04T18:31:00",
     "repeatDaily": true
 }
 
@@ -287,19 +287,33 @@ Content-Type: application/json
 
 
 ### Create new set up scheduler
-POST http://0.0.0.0:8000/api/ai-simulator/predict
+POST http://localhost:8000/api/ai-simulator/predict
 Content-Type: application/json
 
 {
     "user_id": 1,
-    "ngay thu hoach": "device_123",
-    "crop_type": "Lúa",
-    "ngay con lai":,
-    "suc khoe cay trong"
+    "care_recommendation": "Tăng cường Nito",
+    "develop_stage": "Phát triển",
+    "risk": "Dễ bị bệnh",
+    "symptom": "lá héo",
 }
 
+### Create new set up scheduler
+POST http://localhost:8000/api/sensors/create
+Content-Type: application/json
+
+{
+    "temperature": 30,
+    "humidity_soil": 30,
+    "lux": 20,
+    "N_soil": 20,
+    "P_soil": 20,
+    "K_soil": 20
+}
+
+
 ### Create canh bao qua socket tu AI  
-POST http://10.28.128.38:8000/api/ai-simulator/monitor/single
+POST http://0.0.0.0:8000/api/ai-simulator/monitor/single
 Content-Type: application/json
 
 {

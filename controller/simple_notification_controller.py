@@ -34,6 +34,11 @@ async def predict_harvest(body):
         if not user_id:
             raise ValueError("Missing user_id")
         
+        # Lấy các trường mới từ request body
+        care_recommendation = body.get('care_recommendation', "Tăng cường tưới nước")
+        develop_stage = body.get('develop_stage', "Đang phát triển")
+        risk = body.get('risk', "Bình thường")
+        symptom = body.get('symptom', "Không có triệu chứng bất thường")
         # Tạo dữ liệu dự đoán mẫu
         days_to_harvest = random.randint(30, 60)
         harvest_date = (datetime.now() + timedelta(days=days_to_harvest)).strftime("%Y-%m-%d")
@@ -47,15 +52,19 @@ async def predict_harvest(body):
             "confidence": confidence_value,
             "days_remaining": days_to_harvest,
             "crop_health": crop_health,
-            "crop_type": crop_type
+            "crop_type": crop_type,
+            "care_recommendation": care_recommendation,
+            "develop_stage": develop_stage,
+            "risk": risk,
+            "symptom": symptom
         }
         
         # Tạo message thông báo
         message = (
-            f"Dự đoán: Cây trồng của bạn sẽ sẵn sàng thu hoạch vào "
+             f"Dự đoán: Cây {crop_type} ({develop_stage}) của bạn sẽ sẵn sàng thu hoạch vào "
             f"ngày {harvest_date} (còn {days_to_harvest} ngày). "
-            f"Tình trạng cây: {prediction_data['crop_health']}. "
-            f"Loại cây: {prediction_data['crop_type']}"
+            f"Tình trạng: {crop_health}, có triệu chứng: {symptom}. "
+            f"Khuyến nghị: {care_recommendation}."
         )
         
         # Tạo notification
