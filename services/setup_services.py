@@ -7,176 +7,127 @@ import time
 from bson import ObjectId
 from datetime import datetime
 from pytz import timezone
+import aio_pika
+from dotenv import load_dotenv
 
-def service_create_setup_scheduler(body):
+load_dotenv()
+RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
+
+# Service cho API /setup/scheduler
+async def service_create_setup_scheduler(body):
     data = body
     
     email_user = data.get('email')
-    relayName = data.get('relayName')
-    timeStart = data.get('timeStart')
-    timeEnd = data.get('timeEnd')
-    repeatDaily = data.get('repeatDaily')
+    relay_name = data.get('relayName')
+    time_start = data.get('timeStart')
+    time_end = data.get('timeEnd')
+    repeat_daily = data.get('repeatDaily')
     
+    # Kiểm tra user tồn tại
     if collection_user.count_documents({"email": email_user}) == 0:
         return {
             'message': 'User was not registed',
             'data': []
         }, 200
     
-    # Convert timeStart and timeEnd to datetime objects for comparison
-    # Assuming timeStart and timeEnd are in ISO format "YYYY-MM-DD HH:MM:SS" or similar
+    # Kiểm tra định dạng datetime
     try:
-        # Parsing datetime strings - adjust format as needed
-        start_datetime = datetime.fromisoformat(timeStart)
-        end_datetime = datetime.fromisoformat(timeEnd)
+        start_datetime = datetime.fromisoformat(time_start)
+        end_datetime = datetime.fromisoformat(time_end)
     except ValueError:
         return {
-            'message': 'Invalid datetime format. Please use YYYY-MM-DD HH:MM:SS format',
+            'message': 'Invalid datetime format. Please use YYYY-MM-DDTHH:MM:SS format',
             'data': []
         }, 400
     
-    # Check for conflicts with existing schedules for the same relay
-    existing_schedules = collection_setup_scheduler.find({
-        'relayName': relayName
-    })
-
-    if existing_schedules:
-        for schedule in existing_schedules:
-            # Parse existing datetime strings
-            existing_start = datetime.fromisoformat(schedule['timeStart'])
-            existing_end = datetime.fromisoformat(schedule['timeEnd'])
-            
-            # Check for overlap - if new start is before existing end AND new end is after existing start
-            if (start_datetime >= existing_start and end_datetime >= existing_end):
-                # Format recommendation datetime
-                recommended_start = existing_end.strftime("%Y-%m-%d %H:%M:%S")
-                
-                return {
-                    'message': 'Time conflict detected',
-                    'data': {
-                        'conflict': True,
-                        'conflicting_schedule': {
-                            'timeStart': schedule['timeStart'],
-                            'timeEnd': schedule['timeEnd']
-                        },
-                        'recommendation': f'You should schedule from {start_datetime.strftime("%Y-%m-%d %H:%M:%S")} to {existing_start.strftime("%Y-%m-%d %H:%M:%S")} and from {existing_end.strftime("%Y-%m-%d %H:%M:%S")} to {end_datetime.strftime("%Y-%m-%d %H:%M:%S")}'
-                    }
-                }, 409
-
+    # Kiểm tra xung đột thời gian
+    existing_schedules = collection_setup_scheduler.find({'relayName': relay_name})
+    
+    for schedule in existing_schedules:
+        existing_start = datetime.fromisoformat(schedule['timeStart'])
+        existing_end = datetime.fromisoformat(schedule['timeEnd'])
         
-            if (start_datetime >= existing_start and end_datetime <= existing_end):
-                # Format recommendation datetime
-                recommended_start = existing_end.strftime("%Y-%m-%d %H:%M:%S")
-                
-                return {
-                    'message': 'Time conflict detected',
-                    'data': {
-                        'conflict': True,
-                        'conflicting_schedule': {
-                            'timeStart': schedule['timeStart'],
-                            'timeEnd': schedule['timeEnd']
-                        },
-                        'recommendation': f'Scheduler have setted up from {existing_start.strftime("%Y-%m-%d %H:%M:%S")} to {existing_end.strftime("%Y-%m-%d %H:%M:%S")}'
-                    }
-                }, 409
-            
-            
-            if (start_datetime >= existing_start and end_datetime >= existing_end):
-                # Format recommendation datetime
-                recommended_start = existing_end.strftime("%Y-%m-%d %H:%M:%S")
-                
-                return {
-                    'message': 'Time conflict detected',
-                    'data': {
-                        'conflict': True,
-                        'conflicting_schedule': {
-                            'timeStart': schedule['timeStart'],
-                            'timeEnd': schedule['timeEnd']
-                        },
-                        'recommendation': f'You should schedule from {existing_end.strftime("%Y-%m-%d %H:%M:%S")} to {end_datetime.strftime("%Y-%m-%d %H:%M:%S")}'
-                    }
-                }, 409
-            
-            if (start_datetime <= existing_start and end_datetime <= existing_end):
-                # Format recommendation datetime
-                recommended_start = existing_end.strftime("%Y-%m-%d %H:%M:%S")
-                
-                return {
-                    'message': 'Time conflict detected',
-                    'data': {
-                        'conflict': True,
-                        'conflicting_schedule': {
-                            'timeStart': schedule['timeStart'],
-                            'timeEnd': schedule['timeEnd']
-                        },
-                        'recommendation': f'You should schedule from {start_datetime.strftime("%Y-%m-%d %H:%M:%S")} to {existing_start.strftime("%Y-%m-%d %H:%M:%S")}'
-                    }
-                }, 409
+        # Kiểm tra overlap
+        if (start_datetime < existing_end and end_datetime > existing_start):
+            recommended_start = existing_end.strftime("%Y-%m-%dT%H:%M:%S")
+            recommended_end = end_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+            return {
+                'message': 'Time conflict detected',
+                'data': {
+                    'conflict': True,
+                    'conflicting_schedule': {
+                        'timeStart': schedule['timeStart'],
+                        'timeEnd': schedule['timeEnd']
+                    },
+                    'recommendation': f'You should schedule from {recommended_start} to {recommended_end}'
+                }
+            }, 409
     
     vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
     vietnam_time = datetime.now(vietnam_tz)
-
-    print("Time vietnam: ",vietnam_time)
     
-    data = {
+    # Dữ liệu scheduler
+    scheduler_data = {
         'email': email_user,
-        'relayName': relayName,
-        'timeStart': timeStart,
-        'timeEnd': timeEnd,
-        'timestamp': vietnam_time,
-        'repeatDaily' : repeatDaily
+        'relayName': relay_name,
+        'timeStart': time_start,
+        'timeEnd': time_end,
+        'timestamp': vietnam_time.isoformat(),
+        'repeatDaily': repeat_daily
     }
     
-    value = collection_setup_scheduler.insert_one(data)
-
-    value_data = f'{0}_{str(value.inserted_id)}_{relayName}_{timeStart}_{timeEnd}_{int(repeatDaily)}'
-    core_iot_url = "https://app.coreiot.io/api/plugins/telemetry/DEVICE/21c4e8a0-f63f-11ef-a887-6d1a184f2bb5/SHARED_SCOPE"
-    core_iot_body = {
-        "scheduler": value_data
+    # Dữ liệu Core IOT
+    inserted_id = "temp_id"  # Sẽ được cập nhật sau khi lưu vào MongoDB
+    core_iot_data = {
+        'scheduler': f'0_{inserted_id}_{relay_name}_{time_start}_{time_end}_{int(repeat_daily)}',
+        'timestamp': vietnam_time.isoformat()
     }
-   
-    token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2aW5oLm5ndXllbjEyM0BoY211dC5lZHUudm4iLCJ1c2VySWQiOiJjOWY5OGNmMC1lMTQ2LTExZWYtYWQwOS01MTVmNzkwZWQ5ZGYiLCJzY29wZXMiOlsiVEVOQU5UX0FETUlOIl0sInNlc3Npb25JZCI6ImU4MzU5YzgxLWQ2NmEtNDljYi05NjgyLWE3MTg0MDFlOTQ4YyIsImV4cCI6MTc0MjAyMDQzMSwiaXNzIjoiY29yZWlvdC5pbyIsImlhdCI6MTc0MjAxMTQzMSwiZmlyc3ROYW1lIjoiVklOSCIsImxhc3ROYW1lIjoiTkdVWeG7hE4gS0jhuq5DIiwiZW5hYmxlZCI6dHJ1ZSwiaXNQdWJsaWMiOmZhbHNlLCJ0ZW5hbnRJZCI6ImM5ZTk4NzYwLWUxNDYtMTFlZi1hZDA5LTUxNWY3OTBlZDlkZiIsImN1c3RvbWVySWQiOiIxMzgxNDAwMC0xZGQyLTExYjItODA4MC04MDgwODA4MDgwODAifQ.mS-l5RJ-zRfHzJ237nGnnBNidf2KsQqnb0mgJWJtw8voOdkpMlOH3wuQvUtaKIV9qn8BZhr60E_DRrCzaDvp7w"
-    headers = {
-        "Content-Type": "application/json",
-        "X-Authorization": f"Bearer {token}"
-    }
-   
-    max_retries = 2
-    for attempt in range(max_retries):
-        try:
-            response = requests.post(core_iot_url, headers=headers, json=core_iot_body)
-            if response.status_code == 401 and "Token has expired" in response.text:
-                login_url = "https://app.coreiot.io/api/auth/login"
-                login_body = {"username": "vinh.nguyen123@hcmut.edu.vn", "password": "Vinhnguyen1$"}
-                login_response = requests.post(login_url, json=login_body)
-                if login_response.status_code == 200:
-                    token = login_response.json().get('token')
-                    headers["X-Authorization"] = f"Bearer {token}"
-                    continue
-            if response.status_code == 200:
-                print(f"Successfully sent command to Core IOT: {response.text}")
-                break
-            else:
-                print(f"Error sending command to Core IOT: {response.status_code}, {response.text}")
-        except Exception as e:
-            print(f"Exception when calling Core IOT API: {str(e)}")
-        if attempt < max_retries - 1:
-            time.sleep(1)
     
-    print(value_data)
+    # Gửi scheduler data vào RabbitMQ
+    SCHEDULER_QUEUE_NAME = "scheduler_data_queue"
+    try:
+        connection = await aio_pika.connect_robust(f"amqp://guest:guest@{RABBITMQ_HOST}/")
+        async with connection:
+            channel = await connection.channel()
+            queue = await channel.declare_queue(SCHEDULER_QUEUE_NAME, durable=True)
+            
+            message = json.dumps(scheduler_data)
+            await channel.default_exchange.publish(
+                aio_pika.Message(body=message.encode(), delivery_mode=2),
+                routing_key=SCHEDULER_QUEUE_NAME
+            )
+            print(f"Sent scheduler data to RabbitMQ: {message}")
+    except Exception as e:
+        raise Exception(f"Failed to send scheduler data to RabbitMQ: {str(e)}")
+    
+    # Gửi Core IOT data vào RabbitMQ
+    CORE_IOT_QUEUE_NAME = "core_iot_queue"
+    try:
+        connection = await aio_pika.connect_robust(f"amqp://guest:guest@{RABBITMQ_HOST}/")
+        async with connection:
+            channel = await connection.channel()
+            queue = await channel.declare_queue(CORE_IOT_QUEUE_NAME, durable=True)
+            
+            message = json.dumps(core_iot_data)
+            await channel.default_exchange.publish(
+                aio_pika.Message(body=message.encode(), delivery_mode=2),
+                routing_key=CORE_IOT_QUEUE_NAME
+            )
+            print(f"Sent Core IOT data to RabbitMQ: {message}")
+    except Exception as e:
+        raise Exception(f"Failed to send Core IOT data to RabbitMQ: {str(e)}")
     
     return {
         'message': 'Create scheduler successful',
         'data': {
             'email': email_user,
-            'relayName': relayName,
-            'timeStart': timeStart,
-            'timeEnd': timeEnd,
-            'repeatDaily': repeatDaily,
-            'timestamp': vietnam_time
+            'relayName': relay_name,
+            'timeStart': time_start,
+            'timeEnd': time_end,
+            'repeatDaily': repeat_daily,
+            'timestamp': vietnam_time.isoformat()
         }
     }, 200
-
 
 def service_get_setup_scheduler():
     # Lấy tất cả dữ liệu từ MongoDB

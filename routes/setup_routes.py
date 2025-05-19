@@ -11,7 +11,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="signin")
 @router.post("/scheduler")
 async def create_setup_scheduler(request: Request):
     body = await request.json()
-    return controller_create_setup_scheduler(body)
+    response = await controller_create_setup_scheduler(body)
+    return response
 
 
 @router.get("/scheduler")

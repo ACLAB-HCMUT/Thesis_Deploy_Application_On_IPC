@@ -4,17 +4,15 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
     
 
-def controller_create_setup_scheduler(body):
-# Xác thực token
+async def controller_create_setup_scheduler(body):
     try:
-        # Truy vấn tất cả các document trong collection
-        # verify_jwt_token(token)
-        data, status = service_create_setup_scheduler(body)
+        # from service import service_create_setup_scheduler
+        data, status = await service_create_setup_scheduler(body)
         response = {
             "message": data.get('message'),
-            "data": jsonable_encoder(data.get('data')),
+            "data": jsonable_encoder(data.get('data', {})),
             "status": status,
-            "errCode": 0
+            "errCode": data.get('errCode', 0)
         }
         return JSONResponse(content=response, status_code=status)
     except Exception as e:

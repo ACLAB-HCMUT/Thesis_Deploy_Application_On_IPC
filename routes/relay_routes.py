@@ -12,7 +12,8 @@ from controller.relay_controller import (
     controller_create_scheduler,
     controller_get_all_schedulers,
     controller_delete_scheduler,
-    controller_check_and_update_relay
+    controller_check_and_update_relay,
+    controller_get_relay_history_test
 )
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.encoders import jsonable_encoder
@@ -61,7 +62,7 @@ async def get_all_status_for_broadcast(email_user: str):
 @router.post("/update")
 async def update_relay_data(request: Request):
     body = await request.json()
-    response = controller_update_relay(body)
+    response = await controller_update_relay(body)
     
     if isinstance(response, JSONResponse):
         if response.status_code == 200:
@@ -100,6 +101,7 @@ async def update_relay_data(request: Request):
             
             await broadcast_relay_update(broadcast_data)
         return JSONResponse(content=response_dict, status_code=status_code)
+    
 @router.get("/getStatus")
 async def get_relay_data(request: Request):
     body = await request.json()
@@ -109,10 +111,15 @@ async def get_relay_data(request: Request):
 async def get_all_relay_data(email_user: str):
     return controller_getAllStatus_relay({"email_user": email_user})
 
-@router.post("/getHistory")
+@router.get("/getHistory")
 async def get_relay_data_history(request: Request):
     body = await request.json()
     return controller_get_relay_history(body)
+
+@router.get("/getHistoryTest")
+async def get_relay_data_history_test(nut_nhan: str):
+    return controller_get_relay_history_test({"relayName": nut_nhan})
+
 @router.post("/deleteHistory")
 async def delete_relay_history(request: Request):
     body = await request.json()

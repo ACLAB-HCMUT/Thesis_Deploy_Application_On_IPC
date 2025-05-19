@@ -23,7 +23,7 @@ Content-Type: application/json
 
 
 ### Sign in
-POST http://0.0.0.0:8000/api/users/signin
+POST https://thesis-deploy-application-on-ipc.onrender.com/api/users/signin
 Content-Type: application/json
 
 {
@@ -69,17 +69,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1e
 ### Get latest data Sensors
 GET http://0.0.0.0:8000/api/sensors/latest/vinhnguyenkhac20@gmail.com
 
+
 ### Get all data Sensors month
 POST http://0.0.0.0:8000/api/sensors/create
 Content-Type: application/json
 
 {
-    "temperature": "30",
-    "humidity": "30",
-    "lux": "20",
-    "soil": "1000"
+    "temperature": 35,
+    "humidity_soil": 30,
+    "lux": 20,
+    "N_soil": 20,
+    "P_soil": 20,
+    "K_soil": 20
 }
-
 
 ### Get all data Sensors month
 GET http://0.0.0.0:8000/api/sensors/all/month/vinhnguyenkhac20@gmail.com
@@ -133,6 +135,11 @@ Content-Type: application/json
     "relayName": "nutnhan2"
 }
 
+### Get history relay data
+GET http://0.0.0.0:8000/api/relay/getHistoryTest?nut_nhan=nutnhan2
+Content-Type: application/json
+
+
 
 ### Update relay
 POST http://0.0.0.0:8000/api/relay/update
@@ -143,6 +150,10 @@ Content-Type: application/json
     "relayName": "nutnhan2",
     "status": "OFF"
 }
+
+### Get All Status relay
+GET http://0.0.0.0:8000/api/relay/getAllStatus?email_user=vinhnguyenkhac20@gmail.com
+Content-Type: application/json
 
 
 ### Delete relay
@@ -160,15 +171,15 @@ Content-Type: application/json
 # ////////////////////////Scheduler/////////////////#
 
 ### Create new set up scheduler
-POST https://do-an-da-nganh.onrender.com/api/setup/scheduler
+POST http://0.0.0.0:8000/api/setup/scheduler
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
 
 {
     "email": "vinhnguyenkhac20@gmail.com",
     "relayName": "nutnhan2",
-    "timeStart": "2025-05-04T18:30:00",
-    "timeEnd": "2025-05-04T18:31:00",
+    "timeStart": "2028-05-04T18:30:00",
+    "timeEnd": "2028-05-04T18:31:00",
     "repeatDaily": true
 }
 
@@ -212,7 +223,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1e
 
 
 ### Get data scheduler
-GET http://10.28.128.71:8000/api/setup/scheduler
+GET http://0.0.0.0:8000/api/setup/scheduler
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aW5obmd1eWVua2hhYzIwQGdtYWlsLmNvbSIsImV4cCI6MTczNDE1MDM3OX0.dWPYbRUA2JMUP8iWZJcn_W7nUAPWLU1Wx0YKsXWzZgU
 
@@ -287,18 +298,6 @@ Content-Type: application/json
 
 
 ### Create new set up scheduler
-POST http://localhost:8000/api/ai-simulator/predict
-Content-Type: application/json
-
-{
-    "user_id": 1,
-    "care_recommendation": "Tăng cường Nito",
-    "develop_stage": "Phát triển",
-    "risk": "Dễ bị bệnh",
-    "symptom": "lá héo",
-}
-
-### Create new set up scheduler
 POST http://localhost:8000/api/sensors/create
 Content-Type: application/json
 
@@ -312,8 +311,21 @@ Content-Type: application/json
 }
 
 
+### Create new set up scheduler
+POST https://thesis-deploy-application-on-ipc.onrender.com/api/ai-simulator/predict
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "care_recommendation": "Tăng cường Nito và độ ẩm đất bé hơn 60%",
+    "develop_stage": "Mới phát triển",
+    "risk": "Héo cây, còi cọc",
+    "symptom": "Lá héo vào buổi trưa, cây chậm lớn, đất khô và nứt"
+}
+
+
 ### Create canh bao qua socket tu AI  
-POST http://0.0.0.0:8000/api/ai-simulator/monitor/single
+POST https://thesis-deploy-application-on-ipc.onrender.com/api/ai-simulator/monitor/single
 Content-Type: application/json
 
 {
